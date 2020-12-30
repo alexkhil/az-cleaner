@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AzureFunctionsVersion>V3</AzureFunctionsVersion>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+        <PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.36.1" />
+        <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.10" />
+        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+        <PackageReference Include="Polly" Version="7.2.1" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="host.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="local.settings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </None>
+        <None Update="azureauth.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\AzCleaner.Domain\AzCleaner.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

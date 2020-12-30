@@ -1,0 +1,14 @@
+<Project>
+
+    <PropertyGroup>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <PackageProjectUrl>https://github.com/alexkhil/AzCleaner</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/alexkhil/AzCleaner</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+  
+</Project>
