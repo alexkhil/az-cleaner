@@ -124,7 +124,7 @@
               "resources": [
                 {
                     "name": "web",
-                    "type": "Microsoft.Web/sites/sourcecontrols",
+                    "type": "sourcecontrols",
                     "apiVersion": "2018-11-01",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
