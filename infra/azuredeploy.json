@@ -67,7 +67,8 @@
             "storageAccountName": "[toLower(concat('st', concat(parameters('appName'), resourceGroup().location)))]",
             "applicationInsightsName": "[toLower(concat('appi-', variables('suffix')))]",
             "functionAppName": "[toLower(concat('func-', variables('suffix')))]",
-            "hostingPlanName": "[toLower(concat('plan-', variables('suffix')))]"
+            "hostingPlanName": "[toLower(concat('plan-', variables('suffix')))]",
+            "repoUrl": "https://github.com/alexkhil/AzCleaner.git"
           },
           "resources": [
             {
@@ -119,7 +120,22 @@
                     }
                   ]
                 }
-              }
+              },
+              "resources": [
+                {
+                    "name": "web",
+                    "type": "Microsoft.Web/sites/sourcecontrols",
+                    "apiVersion": "2018-11-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[variables('repoURL')]",
+                        "branch": "master",
+                        "IsManualIntegration": true
+                    }
+                }
+              ]
             },
             {
               "name": "[variables('hostingPlanName')]",
