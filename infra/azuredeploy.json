@@ -4,7 +4,17 @@
   "parameters": {
     "appName": {
       "type": "string",
-      "defaultValue": "AzCleaner"
+      "defaultValue": "AzCleaner",
+      "metadata": {
+        "description": "Value uses as base-template to named the resources deployed in Azure."
+      }
+    },
+    "enableApplicationInsights": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Indicates whether ApplicationInsights should be enabled and integrated."
+      }
     }
   },
   "variables": {
@@ -36,6 +46,9 @@
         "parameters": {
           "appName": {
               "value": "[parameters('appName')]"
+          },
+          "enableApplicationInsights": {
+              "value": "[parameters('enableApplicationInsights')]"
           }
         },
         "template": {
@@ -44,6 +57,9 @@
           "parameters": {
             "appName": {
               "type": "string"
+            },
+            "enableApplicationInsights": {
+              "type": "bool"
             }
           },
           "variables": {
@@ -91,7 +107,7 @@
                     },
                     {
                       "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))).InstrumentationKey]"
+                      "value": "[if(parameters('enableApplicationInsights'), reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))).InstrumentationKey, null())]"
                     },
                     {
                       "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
@@ -110,7 +126,6 @@
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2018-02-01",
               "location": "[resourceGroup().location]",
-              "properties": { },
               "sku": {
                 "name": "Y1",
                 "tier": "Dynamic",
@@ -130,6 +145,7 @@
               }
             },
             {
+              "condition": "[parameters('enableApplicationInsights')]",
               "name": "[variables('applicationInsightsName')]",
               "type": "Microsoft.Insights/components",
               "apiVersion": "2015-05-01",
