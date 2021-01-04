@@ -1,14 +1,13 @@
 trigger:
   - '*'
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   buildConfiguration: 'Release'
 
 jobs:
 - job: 'AzureFunctionApp'
+  pool:
+    vmImage: 'ubuntu-latest'
   steps:
   - task: UseDotNet@2
     displayName: 'Install .NET Core SDK'
@@ -47,16 +46,18 @@ jobs:
       summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
       failIfCoverageEmpty: true
 - job: 'ARM'
+  pool:
+    vmImage: 'windows-latest'
   steps:
   - task: RunARMTTKTests@1
     displayName: "Test"
     continueOnError: true
     inputs:
-      templatelocation: '$(Build.SourcesDirectory)/infra/*'
-      resultLocation: '$(Build.SourcesDirectory)/infra/results/*'
+      templatelocation: '$(Build.SourcesDirectory)\infra\*'
+      resultLocation: '$(Build.SourcesDirectory)\infra\results\*'
   - task: PublishTestResults@2
     displayName: "Publish Test Results"
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/infra/results/*-armttk.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)\infra\results\*-armttk.xml'
     condition: always()
