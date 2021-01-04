@@ -50,6 +50,13 @@ jobs:
   steps:
   - task: RunARMTTKTests@1
     displayName: "Test"
+    continueOnError: true
     inputs:
       templatelocation: '$(Build.SourcesDirectory)/infra/*'
       resultLocation: '$(Build.SourcesDirectory)/infra/results/*'
+  - task: PublishTestResults@2
+    displayName: "Publish Test Results"
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(Build.SourcesDirectory)/infra/results/*-armttk.xml'
+    condition: always()
