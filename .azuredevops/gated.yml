@@ -1,0 +1,39 @@
+trigger:
+  - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- job: 'AzureFunctionApp'
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '3.x'
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore'
+    inputs:
+      command: 'restore'
+      feedsToUse: 'select'
+      verbosityRestore: 'Minimal'
+  - task: DotNetCoreCLI@2
+    displayName: "Build '$(buildConfiguration)''"
+    inputs:
+      command: 'build'
+      arguments: '--configuration $(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      testRunTitle: 'Test'
+      arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+      publishTestResults: true
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
+      failIfCoverageEmpty: true
