@@ -22,17 +22,19 @@ jobs:
       feedsToUse: 'select'
       verbosityRestore: 'Minimal'
   - task: DotNetCoreCLI@2
-    displayName: "Build '$(buildConfiguration)''"
+    displayName: "Build '$(buildConfiguration)'"
     inputs:
       command: 'build'
       arguments: '--configuration $(buildConfiguration)'
   - task: DotNetCoreCLI@2
+    displayName: "Test"
     inputs:
       command: 'test'
       testRunTitle: 'Test'
       arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
       publishTestResults: true
   - task: PublishCodeCoverageResults@1
+    displayName: "Publish Code Coverage"
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
