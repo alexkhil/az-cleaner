@@ -46,3 +46,10 @@ jobs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
       failIfCoverageEmpty: true
+- job: 'ARM'
+  steps:
+  - task: RunARMTTKTests@1
+    displayName: "Test"
+    inputs:
+      templatelocation: '$(Build.SourcesDirectory)/infra/*'
+      resultLocation: '$(Build.SourcesDirectory)/infra/results/*'
