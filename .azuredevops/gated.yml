@@ -53,11 +53,11 @@ jobs:
     displayName: "Test"
     continueOnError: true
     inputs:
-      templatelocation: '$(Build.SourcesDirectory)\infra\*'
-      resultLocation: '$(Build.SourcesDirectory)\infra\results\*'
+      templatelocation: '$(System.DefaultWorkingDirectory)\infra'
+      resultLocation: '$(System.DefaultWorkingDirectory)\infra\results'
   - task: PublishTestResults@2
     displayName: "Publish Test Results"
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)\infra\results\*-armttk.xml'
+      testResultsFiles: '$(System.DefaultWorkingDirectory)\infra\results\*-armttk.xml'
     condition: always()
