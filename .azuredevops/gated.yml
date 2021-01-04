@@ -38,12 +38,8 @@ jobs:
       command: 'custom'
       custom: 'tool'
       arguments: 'install dotnet-reportgenerator-globaltool -g'
-  - task: DotNetCoreCLI@2
+  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/Coverage/*.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:Cobertura'
     displayName: 'Generate coverage report'
-    inputs:
-      command: custom
-      custom: reportgenerator
-      arguments: '-reports:$(Build.SourcesDirectory)/TestResults/Coverage/*.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:Cobertura'
   - task: PublishCodeCoverageResults@1
     displayName: "Publish Code Coverage"
     inputs:
