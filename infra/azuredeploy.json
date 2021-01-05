@@ -174,9 +174,6 @@
               "apiVersion": "2015-05-01",
               "kind": "web",
               "location": "[parameters('location')]",
-              "tags": {
-                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('functionAppName')))]": "Resource"
-              },
               "properties": {
                 "ApplicationId": "[variables('functionAppName')]",
                 "Application_Type": "web"
@@ -186,7 +183,7 @@
           "outputs": {
             "functionAppPrincipalId": {
               "type": "string",
-              "value": ""
+              "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2019-08-01', 'Full').identity.principalId]"
             }
           }
         }
