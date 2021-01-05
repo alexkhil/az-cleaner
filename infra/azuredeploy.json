@@ -49,6 +49,9 @@
           },
           "enableApplicationInsights": {
               "value": "[parameters('enableApplicationInsights')]"
+          },
+          "location": {
+              "value": "[deployment().location]"
           }
         },
         "template": {
@@ -60,11 +63,14 @@
             },
             "enableApplicationInsights": {
               "type": "bool"
+            },
+            "location": {
+              "type": "string"
             }
           },
           "variables": {
-            "suffix": "[toLower(concat(parameters('appName'), '-', resourceGroup().location))]",
-            "storageAccountName": "[toLower(concat('st', concat(parameters('appName'), resourceGroup().location)))]",
+            "suffix": "[toLower(concat(parameters('appName'), '-', parameters('location')))]",
+            "storageAccountName": "[toLower(concat('st', concat(parameters('appName'), parameters('location'))))]",
             "applicationInsightsName": "[toLower(concat('appi-', variables('suffix')))]",
             "functionAppName": "[toLower(concat('func-', variables('suffix')))]",
             "hostingPlanName": "[toLower(concat('plan-', variables('suffix')))]",
@@ -74,8 +80,8 @@
             {
               "name": "[variables('functionAppName')]",
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2018-11-01",
-              "location": "[resourceGroup().location]",
+              "apiVersion": "2020-09-01",
+              "location": "[parameters('location')]",
               "kind": "functionapp",
               "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
@@ -125,7 +131,7 @@
                 {
                   "name": "web",
                   "type": "sourcecontrols",
-                  "apiVersion": "2018-11-01",
+                  "apiVersion": "2020-09-01",
                   "dependsOn": [
                       "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
                   ],
@@ -140,8 +146,8 @@
             {
               "name": "[variables('hostingPlanName')]",
               "type": "Microsoft.Web/serverfarms",
-              "apiVersion": "2018-02-01",
-              "location": "[resourceGroup().location]",
+              "apiVersion": "2020-09-01",
+              "location": "[parameters('location')]",
               "sku": {
                 "name": "Y1",
                 "tier": "Dynamic",
@@ -155,7 +161,7 @@
               "name": "[variables('storageAccountName')]",
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2019-06-01",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "kind": "StorageV2",
               "sku": {
                 "name": "Standard_LRS"
@@ -165,14 +171,10 @@
               "condition": "[parameters('enableApplicationInsights')]",
               "name": "[variables('applicationInsightsName')]",
               "type": "Microsoft.Insights/components",
-              "apiVersion": "2015-05-01",
+              "apiVersion": "2018-05-01-preview",
               "kind": "web",
-              "location": "[resourceGroup().location]",
-              "tags": {
-                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('functionAppName')))]": "Resource"
-              },
+              "location": "[parameters('location')]",
               "properties": {
-                "ApplicationId": "[variables('functionAppName')]",
                 "Application_Type": "web"
               }
             }
@@ -188,7 +190,7 @@
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2017-09-01",
+      "apiVersion": "2020-04-01-preview",
       "name": "[variables('roleAssignmentName')]",
       "properties": {
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
