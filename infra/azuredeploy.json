@@ -171,11 +171,10 @@
               "condition": "[parameters('enableApplicationInsights')]",
               "name": "[variables('applicationInsightsName')]",
               "type": "Microsoft.Insights/components",
-              "apiVersion": "2015-05-01",
+              "apiVersion": "2018-05-01-preview",
               "kind": "web",
               "location": "[parameters('location')]",
               "properties": {
-                "ApplicationId": "[variables('functionAppName')]",
                 "Application_Type": "web"
               }
             }
