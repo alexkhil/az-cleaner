@@ -23,10 +23,17 @@ namespace AzCleaner.Func.Repositories
             _retryPolicy = retryPolicy;
         }
 
-        public async Task<IReadOnlyCollection<string>> GetExpiredResourcesAsync()
+        public async Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync()
         {
-            var resources = await _azRepository.GetExpiredResourcesAsync();
+            var resources = await _azRepository.GetExpiredResourceIdsAsync();
             _logger.LogTrace("Found {count} expired resources", resources.Count);
+            return resources;
+        }
+
+        public async Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync()
+        {
+            var resources = await _azRepository.GetEmptyResourceGroupNamesAsync();
+            _logger.LogTrace("Found {count} expired resource groups", resources.Count);
             return resources;
         }
 
@@ -46,5 +53,8 @@ namespace AzCleaner.Func.Repositories
                 _logger.LogWarning("Resource wasn't deleted {resourceId}", resourceId);
             }
         }
+
+        public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
+            _azRepository.DeleteResourceGroupsAsync(resourceGroupNames);
     }
 }

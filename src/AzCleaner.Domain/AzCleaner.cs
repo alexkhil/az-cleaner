@@ -13,8 +13,11 @@ namespace AzCleaner.Domain
         
         public async Task CleanAsync()
         {
-            var expiredResources = await _azRepository.GetExpiredResourcesAsync(); 
+            var expiredResources = await _azRepository.GetExpiredResourceIdsAsync(); 
             await _azRepository.DeleteResourcesAsync(expiredResources);
+            
+            var expiredResourceGroups = await _azRepository.GetEmptyResourceGroupNamesAsync();
+            await _azRepository.DeleteResourceGroupsAsync(expiredResourceGroups);
         }
     }
 }
