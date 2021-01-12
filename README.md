@@ -1,5 +1,6 @@
 # AzCleaner
 
+[![License MIT](https://img.shields.io/github/license/alexkhil/AzCleaner)](https://github.com/alexkhil/AzCleaner/blob/main/LICENSE)
 [![Build Status](https://dev.azure.com/alexkhildev/AzCleaner/_apis/build/status/alexkhil.AzCleaner?branchName=main)](https://dev.azure.com/alexkhildev/AzCleaner/_build/latest?definitionId=5&branchName=main)
 [![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/alexkhildev/AzCleaner/5/main)](https://dev.azure.com/alexkhildev/AzCleaner/_build/latest?definitionId=5&branchName=main)
 
