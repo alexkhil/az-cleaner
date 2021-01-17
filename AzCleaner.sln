@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DC9CE217
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzCleaner.Func.Tests", "tests\AzCleaner.Func.Tests\AzCleaner.Func.Tests.csproj", "{A9FE7DBE-53CE-4677-B18A-980BF516C31B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzCleaner.Domain", "src\AzCleaner.Domain\AzCleaner.Domain.csproj", "{3EC58629-E160-4327-98BD-7F69CB28FF12}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,22 +48,9 @@ Global
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B}.Release|x64.Build.0 = Release|Any CPU
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B}.Release|x86.Build.0 = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|x64.Build.0 = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Debug|x86.Build.0 = Debug|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|x64.ActiveCfg = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|x64.Build.0 = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|x86.ActiveCfg = Release|Any CPU
-		{3EC58629-E160-4327-98BD-7F69CB28FF12}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C9C94FE0-0BC1-4C5C-A686-E30F14A8A03F} = {9A969D17-EFB1-4C0C-B97E-8F11D623F910}
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B} = {DC9CE217-E1AF-4385-946C-9CFBBE21209D}
-		{3EC58629-E160-4327-98BD-7F69CB28FF12} = {9A969D17-EFB1-4C0C-B97E-8F11D623F910}
 	EndGlobalSection
 EndGlobal

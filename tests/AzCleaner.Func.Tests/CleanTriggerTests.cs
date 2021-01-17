@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using AzCleaner.Domain;
+using AzCleaner.Func.Domain;
 using Microsoft.Azure.WebJobs;
 using Moq;
 using Xunit;

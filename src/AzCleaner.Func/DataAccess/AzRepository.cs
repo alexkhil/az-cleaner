@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AzCleaner.Domain;
+using AzCleaner.Func.Domain;
 using Microsoft.Azure.Management.ResourceGraph;
 using Microsoft.Azure.Management.ResourceGraph.Models;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 
-namespace AzCleaner.Func.Repositories
+namespace AzCleaner.Func.DataAccess
 {
     internal class AzRepository : IAzRepository
     {
@@ -52,8 +52,11 @@ namespace AzCleaner.Func.Repositories
                 ResourceUtils.NameFromResourceId(resourceId));
 
         public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
-            Task.WhenAll(resourceGroupNames.Select(x => _resourceManager.ResourceGroups.DeleteByNameAsync(x)));
-        
+            Task.WhenAll(resourceGroupNames.Select(DeleteResourceGroupAsync));
+
+        public Task DeleteResourceGroupAsync(string resourceGroupName) =>
+            _resourceManager.ResourceGroups.DeleteByNameAsync(resourceGroupName);
+
         private async Task<IReadOnlyCollection<string>> ExecuteQuery(string query)
         {
             var subscriptions = new[] {_resourceManager.SubscriptionId};

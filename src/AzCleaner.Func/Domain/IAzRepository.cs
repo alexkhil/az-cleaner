@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AzCleaner.Domain
+namespace AzCleaner.Func.Domain
 {
     public interface IAzRepository
     {
@@ -13,6 +13,8 @@ namespace AzCleaner.Domain
 
         Task DeleteResourceAsync(string resourceId);
 
-        public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames);
+        Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames);
+
+        Task DeleteResourceGroupAsync(string resourceGroupName);
     }
 }

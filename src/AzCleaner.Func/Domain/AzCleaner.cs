@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace AzCleaner.Domain
+namespace AzCleaner.Func.Domain
 {
     public class AzCleaner : IAzCleaner
     {
@@ -15,7 +15,7 @@ namespace AzCleaner.Domain
         {
             var expiredResources = await _azRepository.GetExpiredResourceIdsAsync(); 
             await _azRepository.DeleteResourcesAsync(expiredResources);
-            
+
             var expiredResourceGroups = await _azRepository.GetEmptyResourceGroupNamesAsync();
             await _azRepository.DeleteResourceGroupsAsync(expiredResourceGroups);
         }
