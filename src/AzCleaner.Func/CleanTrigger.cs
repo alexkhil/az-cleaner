@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using AzCleaner.Domain;
+using AzCleaner.Func.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;

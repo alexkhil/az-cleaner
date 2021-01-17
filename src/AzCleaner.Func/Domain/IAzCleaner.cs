@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace AzCleaner.Domain
+namespace AzCleaner.Func.Domain
 {
     public interface IAzCleaner
     {

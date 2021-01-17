@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AzCleaner.Domain;
+using AzCleaner.Func.Domain;
 using Microsoft.Extensions.Logging;
 using Polly;
 
-namespace AzCleaner.Func.Repositories
+namespace AzCleaner.Func.DataAccess
 {
     internal class ResilientAzRepository : IAzRepository
     {
@@ -23,10 +23,17 @@ namespace AzCleaner.Func.Repositories
             _retryPolicy = retryPolicy;
         }
 
-        public async Task<IReadOnlyCollection<string>> GetExpiredResourcesAsync()
+        public async Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync()
         {
-            var resources = await _azRepository.GetExpiredResourcesAsync();
+            var resources = await _azRepository.GetExpiredResourceIdsAsync();
             _logger.LogTrace("Found {count} expired resources", resources.Count);
+            return resources;
+        }
+
+        public async Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync()
+        {
+            var resources = await _azRepository.GetEmptyResourceGroupNamesAsync();
+            _logger.LogTrace("Found {count} expired resource groups", resources.Count);
             return resources;
         }
 
@@ -44,6 +51,23 @@ namespace AzCleaner.Func.Repositories
             else
             {
                 _logger.LogWarning("Resource wasn't deleted {resourceId}", resourceId);
+            }
+        }
+
+        public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
+            Task.WhenAll(resourceGroupNames.Select(DeleteResourceGroupAsync));
+        
+        public async Task DeleteResourceGroupAsync(string resourceGroupName)
+        {
+            var result = await _retryPolicy.ExecuteAndCaptureAsync(() => _azRepository.DeleteResourceGroupAsync(resourceGroupName));
+
+            if (result.Outcome == OutcomeType.Successful)
+            {
+                _logger.LogTrace("Resource group deleted {resourceGroupName}", resourceGroupName);
+            }
+            else
+            {
+                _logger.LogWarning("Resource group wasn't deleted {resourceGroupName}", resourceGroupName);
             }
         }
     }

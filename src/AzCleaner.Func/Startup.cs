@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
-using AzCleaner.Domain;
-using AzCleaner.Func.Repositories;
+using AzCleaner.Func.DataAccess;
+using AzCleaner.Func.Domain;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.Management.ResourceGraph;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
