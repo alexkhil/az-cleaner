@@ -2,6 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Location for the resources."
+      }
+    },
     "appName": {
       "type": "string",
       "defaultValue": "AzCleaner",
@@ -18,7 +25,7 @@
     }
   },
   "variables": {
-    "suffix": "[toLower(concat(parameters('appName'), '-', deployment().location))]",
+    "suffix": "[toLower(concat(parameters('appName'), '-', parameters('location')))]",
     "resourceGroupName": "[toLower(concat('rg-', variables('suffix')))]",
     "roleAssignmentName": "[guid(subscription().subscriptionId, variables('resourceGroupName'))]",
     "deploymentName": "[concat('AzCleaner.Template-', uniqueString(deployment().name))]"
@@ -28,7 +35,7 @@
       "name": "[variables('resourceGroupName')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2020-06-01",
-      "location": "[deployment().location]"
+      "location": "[parameters('location')]"
     },
     {
       "name": "[variables('deploymentName')]",
@@ -45,13 +52,13 @@
         },
         "parameters": {
           "appName": {
-              "value": "[parameters('appName')]"
+            "value": "[parameters('appName')]"
           },
           "enableApplicationInsights": {
-              "value": "[parameters('enableApplicationInsights')]"
+            "value": "[parameters('enableApplicationInsights')]"
           },
           "location": {
-              "value": "[deployment().location]"
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -133,12 +140,12 @@
                   "type": "sourcecontrols",
                   "apiVersion": "2020-09-01",
                   "dependsOn": [
-                      "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+                    "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
                   ],
                   "properties": {
-                      "repoUrl": "[variables('repoURL')]",
-                      "branch": "main",
-                      "isManualIntegration": true
+                    "repoUrl": "[variables('repoURL')]",
+                    "branch": "main",
+                    "isManualIntegration": true
                   }
                 }
               ]
