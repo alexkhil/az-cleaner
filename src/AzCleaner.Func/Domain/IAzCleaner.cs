@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace AzCleaner.Func.Domain
+namespace AzCleaner.Func.Domain;
+
+public interface IAzCleaner
 {
-    public interface IAzCleaner
-    {
-        Task CleanAsync();
-    }
+    Task CleanAsync();
 }

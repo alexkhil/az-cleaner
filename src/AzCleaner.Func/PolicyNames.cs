@@ -1,7 +1,6 @@
-namespace AzCleaner.Func
+namespace AzCleaner.Func;
+
+internal static class PolicyNames
 {
-    internal static class PolicyNames
-    {
-        public static readonly string BasicRetry = nameof(BasicRetry);
-    }
+    public static readonly string BasicRetry = nameof(BasicRetry);
 }
