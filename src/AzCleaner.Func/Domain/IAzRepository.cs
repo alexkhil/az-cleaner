@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AzCleaner.Func.Domain
+namespace AzCleaner.Func.Domain;
+
+public interface IAzRepository
 {
-    public interface IAzRepository
-    {
-        Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync();
-        
-        Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync();
-        
-        Task DeleteResourcesAsync(IEnumerable<string> resourceIds);
+    Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync();
 
-        Task DeleteResourceAsync(string resourceId);
+    Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync();
 
-        Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames);
+    Task DeleteResourcesAsync(IEnumerable<string> resourceIds);
 
-        Task DeleteResourceGroupAsync(string resourceGroupName);
-    }
+    Task DeleteResourceAsync(string resourceId);
+
+    Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames);
+
+    Task DeleteResourceGroupAsync(string resourceGroupName);
 }
