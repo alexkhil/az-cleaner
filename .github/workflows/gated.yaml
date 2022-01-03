@@ -32,6 +32,7 @@ jobs:
         run: >
           dotnet test
           --collect "XPlat Code coverage"
+          -r test-results
           -c Release
           -v minimal
           --no-build
@@ -41,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: /**/coverage.cobertura.xml
+          path: test-results/**
