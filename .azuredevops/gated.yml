@@ -1,5 +1,4 @@
-trigger:
-  - main
+trigger: none
 
 pr:
   branches:
@@ -11,73 +10,73 @@ pr:
       - LICENSE
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: "Release"
 
 jobs:
-- job: FUNC
-  displayName: 'Azure Function App'
-  pool:
-    vmImage: 'ubuntu-latest'
+  - job: FUNC
+    displayName: "Azure Function App"
+    pool:
+      vmImage: "ubuntu-latest"
 
-  steps:
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core SDK'
-    inputs:
-      packageType: 'sdk'
-      version: '6.x'
+    steps:
+      - task: UseDotNet@2
+        displayName: "Install .NET Core SDK"
+        inputs:
+          packageType: "sdk"
+          version: "6.x"
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Restore'
-    inputs:
-      command: 'restore'
-      feedsToUse: 'select'
-      verbosityRestore: 'Minimal'
+      - task: DotNetCoreCLI@2
+        displayName: "Restore"
+        inputs:
+          command: "restore"
+          feedsToUse: "select"
+          verbosityRestore: "Minimal"
 
-  - task: DotNetCoreCLI@2
-    displayName: "Build '$(buildConfiguration)'"
-    inputs:
-      command: 'build'
-      arguments: '--configuration $(buildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: "Build '$(buildConfiguration)'"
+        inputs:
+          command: "build"
+          arguments: "--configuration $(buildConfiguration)"
 
-  - task: DotNetCoreCLI@2
-    displayName: "Test"
-    inputs:
-      command: 'test'
-      testRunTitle: 'Test'
-      arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
+      - task: DotNetCoreCLI@2
+        displayName: "Test"
+        inputs:
+          command: "test"
+          testRunTitle: "Test"
+          arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Install ReportGenerator'
-    inputs:
-      command: 'custom'
-      custom: 'tool'
-      arguments: 'install dotnet-reportgenerator-globaltool -g'
+      - task: DotNetCoreCLI@2
+        displayName: "Install ReportGenerator"
+        inputs:
+          command: "custom"
+          custom: "tool"
+          arguments: "install dotnet-reportgenerator-globaltool -g"
 
-  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:Cobertura'
-    displayName: 'Generate coverage report'
+      - script: "reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:Cobertura"
+        displayName: "Generate coverage report"
 
-  - task: PublishCodeCoverageResults@1
-    displayName: "Publish Code Coverage"
-    inputs:
-      codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
-      failIfCoverageEmpty: true
+      - task: PublishCodeCoverageResults@1
+        displayName: "Publish Code Coverage"
+        inputs:
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml"
+          failIfCoverageEmpty: true
 
-- job: ARM
-  displayName: 'Azure Resource Manager'
-  pool:
-    vmImage: 'windows-latest'
+  - job: ARM
+    displayName: "Azure Resource Manager"
+    pool:
+      vmImage: "windows-latest"
 
-  steps:
-  - task: RunARMTTKTests@1
-    displayName: "Test"
-    inputs:
-      templateLocation: '$(System.DefaultWorkingDirectory)\infra'
-      resultLocation: '$(System.DefaultWorkingDirectory)\infra\results'
+    steps:
+      - task: RunARMTTKTests@1
+        displayName: "Test"
+        inputs:
+          templateLocation: '$(System.DefaultWorkingDirectory)\infra'
+          resultLocation: '$(System.DefaultWorkingDirectory)\infra\results'
 
-  - task: PublishTestResults@2
-    displayName: "Publish Test Results"
-    inputs:
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(System.DefaultWorkingDirectory)\infra\results\*-armttk.xml'
-    condition: always()
+      - task: PublishTestResults@2
+        displayName: "Publish Test Results"
+        inputs:
+          testResultsFormat: "NUnit"
+          testResultsFiles: '$(System.DefaultWorkingDirectory)\infra\results\*-armttk.xml'
+        condition: always()
