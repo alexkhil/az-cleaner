@@ -28,7 +28,8 @@
     "suffix": "[toLower(concat(parameters('appName'), '-', parameters('location')))]",
     "resourceGroupName": "[toLower(concat('rg-', variables('suffix')))]",
     "roleAssignmentName": "[guid(subscription().subscriptionId, variables('resourceGroupName'))]",
-    "deploymentName": "[concat('AzCleaner.Template-', uniqueString(deployment().name))]"
+    "deploymentName": "[concat('AzCleaner.Template-', uniqueString(deployment().name))]",
+    "contributorRoleId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
   },
   "resources": [
     {
@@ -40,7 +41,7 @@
     {
       "name": "[variables('deploymentName')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2021-04-01",
       "resourceGroup": "[variables('resourceGroupName')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
@@ -87,7 +88,7 @@
             {
               "name": "[variables('functionAppName')]",
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2020-09-01",
+              "apiVersion": "2021-02-01",
               "location": "[parameters('location')]",
               "kind": "functionapp",
               "dependsOn": [
@@ -138,7 +139,7 @@
                 {
                   "name": "web",
                   "type": "sourcecontrols",
-                  "apiVersion": "2020-09-01",
+                  "apiVersion": "2021-02-01",
                   "dependsOn": [
                     "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
                   ],
@@ -153,16 +154,12 @@
             {
               "name": "[variables('hostingPlanName')]",
               "type": "Microsoft.Web/serverfarms",
-              "apiVersion": "2020-09-01",
+              "apiVersion": "2021-02-01",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Y1",
-                "tier": "Dynamic",
-                "size": "Y1",
-                "family": "Y",
-                "capacity": 0
-              },
-              "properties": {}
+                "tier": "Dynamic"
+              }
             },
             {
               "name": "[variables('storageAccountName')]",
@@ -200,7 +197,7 @@
       "apiVersion": "2020-04-01-preview",
       "name": "[variables('roleAssignmentName')]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleAssignments', concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
+        "roleDefinitionId": "[variables('contributorRoleId')]",
         "principalId": "[reference(variables('deploymentName')).outputs.functionAppPrincipalId.value]"
       }
     }
