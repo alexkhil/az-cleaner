@@ -29,7 +29,7 @@
     "resourceGroupName": "[toLower(concat('rg-', variables('suffix')))]",
     "roleAssignmentName": "[guid(subscription().subscriptionId, variables('resourceGroupName'))]",
     "deploymentName": "[concat('AzCleaner.Template-', uniqueString(deployment().name))]",
-    "contributorRoleId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
+    "contributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
   },
   "resources": [
     {
@@ -197,7 +197,7 @@
       "apiVersion": "2020-04-01-preview",
       "name": "[variables('roleAssignmentName')]",
       "properties": {
-        "roleDefinitionId": "[variables('contributorRoleId')]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('contributorRoleId'))]",
         "principalId": "[reference(variables('deploymentName')).outputs.functionAppPrincipalId.value]"
       }
     }
