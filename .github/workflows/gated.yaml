@@ -59,7 +59,7 @@ jobs:
 
   arm:
     name: Azure Resource Manager
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Test
