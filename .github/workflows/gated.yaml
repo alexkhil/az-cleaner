@@ -45,11 +45,11 @@ jobs:
           path: test-results/**
 
       - name: Generate report
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.0
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
           reports: test-results/**/coverage.cobertura.xml
           targetdir: test-reports
-          reporttypes: "HtmlInline;Cobertura"
+          reporttypes: "Badges;Cobertura;PngChart;Html"
 
       - name: Publish test reports
         uses: actions/upload-artifact@v2
