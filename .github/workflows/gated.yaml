@@ -48,8 +48,64 @@ jobs:
         uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
           reports: test-results/**/coverage.cobertura.xml
-          targetdir: test-reports
-          reporttypes: "Badges;Cobertura;PngChart;Html"
+          targetdir: test-reports/Cobertura
+          reporttypes: Cobertura
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/Badges
+          reporttypes: Badges
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/Clover
+          reporttypes: Clover
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/Html
+          reporttypes: Html
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/HtmlChart
+          reporttypes: HtmlChart
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/HtmlInline
+          reporttypes: HtmlInline
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/HtmlSummary
+          reporttypes: HtmlSummary
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/MarkdownSummary
+          reporttypes: MarkdownSummary
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/PngChart
+          reporttypes: PngChart
 
       - name: Publish test reports
         uses: actions/upload-artifact@v2
