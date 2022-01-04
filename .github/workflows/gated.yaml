@@ -67,12 +67,11 @@ jobs:
 
       - name: Test
         id: testinfra
-        uses: aliencube/arm-ttk-actions@v0.3
+        uses: venura9/arm-ttk@master
         with:
           path: infra
 
-      - name: Test result - files
-        shell: bash
-        continue-on-error: true
+      - name: Results for Run ARM-TTK with 'path'
         run: |
-          echo "${{ toJSON(fromJSON(steps.testinfra.outputs.results)) }}"
+          content=${{ steps.testinfra.outputs.results }}
+          echo 'Results $content'
