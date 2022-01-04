@@ -66,7 +66,7 @@ jobs:
         id: testinfra
         uses: aliencube/arm-ttk-actions@v0.3
         with:
-          path: infra
+          path: ./infra
 
       - name: Test result - files
         shell: bash
