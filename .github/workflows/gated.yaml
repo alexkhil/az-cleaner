@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: test dir
-        run: ls
+        run: ls -a
 
       - name: Test
         id: testinfra
