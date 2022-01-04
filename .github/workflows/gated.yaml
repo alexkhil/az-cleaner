@@ -62,11 +62,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: test dir
+        run: ls
+
       - name: Test
         id: testinfra
         uses: aliencube/arm-ttk-actions@v0.3
         with:
-          path: ./infra
+          path: infra
 
       - name: Test result - files
         shell: bash
