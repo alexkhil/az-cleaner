@@ -10,8 +10,8 @@
         <PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.38.0" />
         <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" Version="2.1.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
-        <PackageReference Include="Polly" Version="7.2.2" />
+        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.0" />
+        <PackageReference Include="Polly" Version="7.2.3" />
     </ItemGroup>
 
     <ItemGroup>
