@@ -1,0 +1,77 @@
+name: Gated
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+
+jobs:
+  func:
+    name: Azure Function App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore -v minimal
+
+      - name: Build Release
+        run: dotnet build -c Release -v minimal --no-restore --nologo
+
+      - name: Test
+        run: >
+          dotnet test
+          --collect "XPlat Code coverage"
+          -r test-results
+          -c Release
+          -v minimal
+          --no-build
+          --nologo
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: test-results/**
+
+      - name: Generate report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
+        with:
+          reports: test-results/**/coverage.cobertura.xml
+          targetdir: test-reports/Html
+          reporttypes: Html
+
+      - name: Publish test reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports
+          path: test-reports/Html/**
+
+  # arm:
+  #   name: Azure Resource Manager
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: test dir
+  #       run: ls -a
+
+  #     - name: Test
+  #       id: testinfra
+  #       uses: venura9/arm-ttk@master
+  #       with:
+  #         path: infra
+
+  #     - name: Results for Run ARM-TTK with 'path'
+  #       run: |
+  #         content=${{ steps.testinfra.outputs.results }}
+  #         echo 'Results $content'
