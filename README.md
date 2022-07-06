@@ -20,12 +20,12 @@ cd infra
 az deployment group create -n <deployment-name> -g <resource-group-name> -f azuredeploy.json
 ```
 
-[license-badge]: <https://img.shields.io/github/license/alexkhil/AzCleaner>
-[license-link]: <https://github.com/alexkhil/AzCleaner/blob/main/LICENSE>
-[build-badge]: <https://dev.azure.com/alexkhildev/AzCleaner/_apis/build/status/alexkhil.AzCleaner?branchName=main>
-[build-link]: <https://dev.azure.com/alexkhildev/AzCleaner/_build/latest?definitionId=5&branchName=main>
-[coverage-badge]: <https://img.shields.io/azure-devops/coverage/alexkhildev/AzCleaner/5/main>
+[license-badge]: <https://img.shields.io/github/license/alexkhil/az-cleaner>
+[license-link]: <https://github.com/alexkhil/az-cleaner/blob/main/LICENSE>
+[build-badge]: <https://dev.azure.com/alexkhildev/az-cleaner/_apis/build/status/alexkhil.AzCleaner?branchName=main>
+[build-link]: <https://dev.azure.com/alexkhildev/az-cleaner/_build/latest?definitionId=5&branchName=main>
+[coverage-badge]: <https://img.shields.io/azure-devops/coverage/alexkhildev/az-cleaner/5/main>
 [deploy-badge]: <https://aka.ms/deploytoazurebutton>
-[deploy-link]: <https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Falexkhil%2FAzCleaner%2Fmain%2Finfra%2Fazuredeploy.json>
+[deploy-link]: <https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Falexkhil%2Faz-cleaner%2Fmain%2Finfra%2Fazuredeploy.json>
 [visualize-badge]: <https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true>
-[visualize-link]: <http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Falexkhil%2FAzCleaner%2Fmain%2Finfra%2Fazuredeploy.json>
+[visualize-link]: <http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Falexkhil%2Faz-cleaner%2Fmain%2Finfra%2Fazuredeploy.json>
