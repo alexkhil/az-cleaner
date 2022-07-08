@@ -17,8 +17,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
 
@@ -26,54 +26,53 @@ jobs:
         run: dotnet restore -v minimal
 
       - name: Build Release
-        run: dotnet build -c Release -v minimal --no-restore --nologo
+        run: >
+          dotnet build
+          -c Release
+          -v minimal
+          --no-restore
+          --nologo
 
       - name: Test
         run: >
           dotnet test
           --collect "XPlat Code coverage"
-          -r test-results
+          -r artifacts/tests
           -c Release
           -v minimal
           --no-build
           --nologo
 
-      - name: Publish test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: test-results/**
-
       - name: Generate report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
-          reports: test-results/**/coverage.cobertura.xml
-          targetdir: test-reports/Html
+          reports: artifacts/tests/**/coverage.cobertura.xml
+          targetdir: artifacts/tests/Html
           reporttypes: Html
 
       - name: Publish test reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifacts@v2
         with:
-          name: test-reports
-          path: test-reports/Html/**
+          name: tests
+          path: artifacts/tests
 
-  infra:
-    name: Azure Resource Manager
-    runs-on: ubuntu-latest
+  # infra:
+  #   name: Azure Resource Manager
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Test
-        id: testinfra
-        uses: venura9/arm-ttk@master
-        with:
-          path: infra
-          file: azuredeploy.json
+  #     - name: Test
+  #       id: testinfra
+  #       uses: venura9/arm-ttk@master
+  #       with:
+  #         path: infra
+  #         file: azuredeploy.json
 
-      - name: Results for Run ARM-TTK with 'path'
-        if: always()
-        run: |
-          content=${{ steps.testinfra.outputs.results }}
-          echo 'Results $content'
+  #     - name: Results for Run ARM-TTK with 'path'
+  #       if: always()
+  #       run: |
+  #         content=${{ steps.testinfra.outputs.results }}
+  #         echo 'Results $content'
