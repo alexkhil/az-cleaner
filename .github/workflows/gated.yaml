@@ -25,13 +25,12 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Restore
-        run: dotnet restore -v minimal
+        run: dotnet restore
 
       - name: Build Release
         run: >
           dotnet build
           -c Release
-          -v minimal
           --no-restore
           --nologo
 
@@ -39,9 +38,8 @@ jobs:
         run: >
           dotnet test
           --collect "XPlat Code coverage"
-          -r $TESTS_OUTPUT/coverage
+          -r ${{ env.TESTS_OUTPUT }}/coverage
           -c Release
-          -v minimal
           --no-restore
           --no-build
           --nologo
@@ -49,15 +47,15 @@ jobs:
       - name: Generate report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
-          reports: $TESTS_OUTPUT/**/coverage.cobertura.xml
-          targetdir: $TESTS_OUTPUT/report
+          reports: ${{ env.TESTS_OUTPUT }}/**/coverage.cobertura.xml
+          targetdir: ${{ env.TESTS_OUTPUT }}/report
           reporttypes: Html
 
       - name: Publish tests artifacts
         uses: actions/upload-artifact@v2
         with:
           name: tests
-          path: $TESTS_OUTPUT
+          path: ${{ env.TESTS_OUTPUT }}
 
   # infra:
   #   name: Azure Resource Manager
