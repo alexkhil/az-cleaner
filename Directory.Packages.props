@@ -4,8 +4,9 @@
     <PackageVersion Include="Microsoft.Azure.Management.Fluent" Version="1.38.1" />
     <PackageVersion Include="Microsoft.Azure.Management.ResourceGraph" Version="2.1.0" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.NET.Sdk.Functions" Version="4.1.0" />
+    <PackageVersion Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
     <PackageVersion Include="Polly" Version="7.2.3" />
+    <PackageVersion Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.NET.Sdk.Functions" />
         <PackageReference Include="Polly" />
+        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <ItemGroup>
