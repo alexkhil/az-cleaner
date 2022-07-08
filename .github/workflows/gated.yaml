@@ -65,14 +65,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: test dir
-        run: ls -a
-
       - name: Test
         id: testinfra
         uses: venura9/arm-ttk@master
         with:
-          path: infra/
+          path: az-cleaner/infra/
 
       - name: Results for Run ARM-TTK with 'path'
         if: always()
