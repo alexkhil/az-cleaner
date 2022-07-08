@@ -12,6 +12,8 @@ jobs:
   func:
     name: Azure Function App
     runs-on: ubuntu-latest
+    env:
+      TESTS_OUTPUT: artifacts/tests
 
     steps:
       - name: Checkout
@@ -22,7 +24,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore -v minimal
 
       - name: Build Release
@@ -37,24 +39,25 @@ jobs:
         run: >
           dotnet test
           --collect "XPlat Code coverage"
-          -r artifacts/tests
+          -r $TESTS_OUTPUT/coverage
           -c Release
           -v minimal
+          --no-restore
           --no-build
           --nologo
 
       - name: Generate report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
-          reports: artifacts/tests/**/coverage.cobertura.xml
-          targetdir: artifacts/tests/Html
+          reports: $TESTS_OUTPUT/**/coverage.cobertura.xml
+          targetdir: $TESTS_OUTPUT/report
           reporttypes: Html
 
-      - name: Publish test reports
+      - name: Publish tests artifacts
         uses: actions/upload-artifact@v2
         with:
           name: tests
-          path: artifacts/tests
+          path: $TESTS_OUTPUT
 
   # infra:
   #   name: Azure Resource Manager
