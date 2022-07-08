@@ -9,6 +9,7 @@
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" />
         <PackageReference Include="Microsoft.Azure.Management.Fluent" />
         <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" />
+        <PackageReference Include="Microsoft.Azure.WebJobs" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.NET.Sdk.Functions" />
         <PackageReference Include="Polly" />
