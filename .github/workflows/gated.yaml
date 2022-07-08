@@ -66,10 +66,10 @@ jobs:
         run: ls -a
 
       - name: Test
-        id: testinfra/
+        id: testinfra
         uses: venura9/arm-ttk@master
         with:
-          path: infra
+          path: infra/
 
       - name: Results for Run ARM-TTK with 'path'
         run: |
