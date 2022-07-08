@@ -75,6 +75,7 @@ jobs:
           path: infra/
 
       - name: Results for Run ARM-TTK with 'path'
+        if: always()
         run: |
           content=${{ steps.testinfra.outputs.results }}
           echo 'Results $content'
