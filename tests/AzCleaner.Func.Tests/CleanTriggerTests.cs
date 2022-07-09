@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AzCleaner.Func.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Moq;
 using Xunit;
@@ -23,10 +24,10 @@ public class CleanTriggerTests
     [Theory, AutoMoqData]
     public async Task CleanManuallyAsync_WhenCalled_CallsCleanAsync(
         [Frozen] Mock<IAzCleaner> azCleanerMock,
-        TimerInfo timer,
+        HttpRequest request,
         CleanTrigger sut)
     {
-        await sut.CleanAutomaticallyAsync(timer);
+        await sut.CleanManuallyAsync(request);
 
         azCleanerMock.Verify(x => x.CleanAsync(), Times.Once);
     }
