@@ -75,9 +75,8 @@ jobs:
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
-      - name: Git Pull
-        run: |
-          git switch -c $GIT_BRANCH_NAME
+      # - name: Git Pull
+      #   run: git switch -c $GIT_BRANCH_NAME
 
       - name: Commit & Push changes
         uses: actions-js/push@master
