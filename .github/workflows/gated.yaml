@@ -71,8 +71,15 @@ jobs:
           bicepFilePath: infra/main.bicep
           outputFilePath: infra/azuredeploy1.json
 
+      - name: Git branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+
       - name: Display ARM
-        run: echo $GITHUB_REF
+        run: echo "Branch name ${GIT_BRANCH_NAME}"
+
+      - name: Display Branch using git
+        run: git rev-parse --abbrev-ref HEAD
 
       # - name: Commit & Push changes
       #   uses: actions-js/push@master
