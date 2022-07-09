@@ -75,14 +75,8 @@ jobs:
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
-      - name: Display ARM
-        run: echo "Branch name ${GIT_BRANCH_NAME}"
-
-      - name: Display Branch using git
-        run: git rev-parse --abbrev-ref HEAD
-
-      # - name: Commit & Push changes
-      #   uses: actions-js/push@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: ${{ env.GITHUB_REF_NAME }}
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ GIT_BRANCH_NAME }}
