@@ -75,8 +75,17 @@ jobs:
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
-      - name: Commit & Push changes
-        uses: actions-js/push@master
+      # - name: Commit & Push changes
+      #   uses: actions-js/push@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ env.GIT_BRANCH_NAME }}
+      #     force: true
+
+      - name: Push ARM
+        uses: github-actions-x/commit@v2.9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ env.GIT_BRANCH_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: ${{ env.GIT_BRANCH_NAME }}
+          commit-message: "Update ARM"
+          files: infra/azuredeploy1.json
