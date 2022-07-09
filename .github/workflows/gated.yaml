@@ -72,7 +72,7 @@ jobs:
           outputFilePath: infra/azuredeploy1.json
 
       - name: Display ARM
-        run: echo $GITHUB_REF_NAME
+        run: echo $GITHUB_REF
 
       # - name: Commit & Push changes
       #   uses: actions-js/push@master
