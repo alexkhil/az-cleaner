@@ -29,8 +29,10 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Set up SonarCloud scanner
-        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Set up .Net global tools
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,7 +50,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/**/*.xml"
+          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/**/*.xml"
 
       - name: Build Release
         run: >
@@ -61,11 +63,18 @@ jobs:
         run: >
           dotnet test
           --collect "XPlat Code coverage"
-          -r ${{ env.TESTS_OUTPUT }}/coverage
+          -r ${{ env.TESTS_OUTPUT }}/coverage/dotnet
           -c Release
           --no-restore
           --no-build
           --nologo
+
+      - name: Sonar Coverage
+        run: >
+          reportgenerator
+          -reports:${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml
+          -targetdir:${{ env.TESTS_OUTPUT }}/coverage/sonar
+          -reporttypes:SonarQube
 
       - name: End Sonar
         env:
