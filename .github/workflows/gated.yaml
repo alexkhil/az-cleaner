@@ -12,66 +12,76 @@ jobs:
   func:
     name: Azure Function App
     runs-on: ubuntu-latest
+    env:
+      TESTS_OUTPUT: artifacts/tests
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore -v minimal
+      - name: .Net Restore
+        run: dotnet restore
 
       - name: Build Release
-        run: dotnet build -c Release -v minimal --no-restore --nologo
+        run: >
+          dotnet build
+          -c Release
+          --no-restore
+          --nologo
 
-      - name: Test
+      - name: .Net Test
         run: >
           dotnet test
           --collect "XPlat Code coverage"
-          -r test-results
+          -r ${{ env.TESTS_OUTPUT }}/coverage
           -c Release
-          -v minimal
+          --no-restore
           --no-build
           --nologo
-
-      - name: Publish test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: test-results/**
 
       - name: Generate report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.0.2
         with:
-          reports: test-results/**/coverage.cobertura.xml
-          targetdir: test-reports/Html
+          reports: ${{ env.TESTS_OUTPUT }}/**/coverage.cobertura.xml
+          targetdir: ${{ env.TESTS_OUTPUT }}/report
           reporttypes: Html
 
-      - name: Publish test reports
+      - name: Publish tests artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: test-reports
-          path: test-reports/Html/**
+          name: tests
+          path: ${{ env.TESTS_OUTPUT }}
 
-  # arm:
-  #   name: Azure Resource Manager
-  #   runs-on: ubuntu-latest
+  infra:
+    name: Azure Infrastructure
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: test dir
-  #       run: ls -a
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  #     - name: Test
-  #       id: testinfra
-  #       uses: venura9/arm-ttk@master
-  #       with:
-  #         path: infra
+      - name: Bicep Build
+        uses: Azure/bicep-build-action@v1.0.0
+        with:
+          bicepFilePath: infra/main.bicep
+          outputFilePath: infra/azuredeploy1.json
 
-  #     - name: Results for Run ARM-TTK with 'path'
-  #       run: |
-  #         content=${{ steps.testinfra.outputs.results }}
-  #         echo 'Results $content'
+      - name: Git branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+
+      - name: Git Pull
+        run: |
+          git switch -c $GIT_BRANCH_NAME
+
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.GIT_BRANCH_NAME }}
+          force: true
