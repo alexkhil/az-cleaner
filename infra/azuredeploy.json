@@ -1,6 +1,13 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.8.9.13224",
+      "templateHash": "18278950672045428964"
+    }
+  },
   "parameters": {
     "location": {
       "type": "string",
@@ -25,32 +32,41 @@
     }
   },
   "variables": {
-    "suffix": "[toLower(concat(parameters('appName'), '-', parameters('location')))]",
-    "resourceGroupName": "[toLower(concat('rg-', variables('suffix')))]",
-    "roleAssignmentName": "[guid(subscription().subscriptionId, variables('resourceGroupName'))]",
-    "deploymentName": "[concat('AzCleaner.Template-', uniqueString(deployment().name))]",
+    "suffix": "[toLower(format('{0}-{1}', parameters('appName'), parameters('location')))]",
+    "resourceGroupName_var": "[toLower(format('rg-{0}', variables('suffix')))]",
+    "roleAssignmentName_var": "[guid(subscription().subscriptionId, variables('resourceGroupName_var'))]",
+    "deploymentName_var": "[format('AzCleaner.Template-{0}', uniqueString(deployment().name))]",
     "contributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c"
   },
   "resources": [
     {
-      "name": "[variables('resourceGroupName')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2020-06-01",
+      "name": "[variables('resourceGroupName_var')]",
       "location": "[parameters('location')]"
     },
     {
-      "name": "[variables('deploymentName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
-      ],
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[variables('roleAssignmentName_var')]",
       "properties": {
-        "mode": "Incremental",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('contributorRoleId'))]",
+        "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName_var')), 'Microsoft.Resources/deployments', variables('deploymentName_var'))).outputs.functionAppPrincipalId.value]"
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName_var')), 'Microsoft.Resources/deployments', variables('deploymentName_var'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('deploymentName_var')]",
+      "resourceGroup": "[variables('resourceGroupName_var')]",
+      "properties": {
         "expressionEvaluationOptions": {
-          "scope": "Inner"
+          "scope": "inner"
         },
+        "mode": "Incremental",
         "parameters": {
           "appName": {
             "value": "[parameters('appName')]"
@@ -65,6 +81,13 @@
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.8.9.13224",
+              "templateHash": "17682234002162566468"
+            }
+          },
           "parameters": {
             "appName": {
               "type": "string"
@@ -77,31 +100,26 @@
             }
           },
           "variables": {
-            "suffix": "[toLower(concat(parameters('appName'), '-', parameters('location')))]",
-            "storageAccountName": "[toLower(concat('st', concat(parameters('appName'), parameters('location'))))]",
-            "applicationInsightsName": "[toLower(concat('appi-', variables('suffix')))]",
-            "functionAppName": "[toLower(concat('func-', variables('suffix')))]",
-            "hostingPlanName": "[toLower(concat('plan-', variables('suffix')))]",
+            "suffix": "[toLower(format('{0}-{1}', parameters('appName'), parameters('location')))]",
+            "storageAccountName_var": "[toLower(format('st{0}{1}', parameters('appName'), parameters('location')))]",
+            "applicationInsightsName_var": "[toLower(format('appi-{0}', variables('suffix')))]",
+            "functionAppName_var": "[toLower(format('func-{0}', variables('suffix')))]",
+            "hostingPlanName_var": "[toLower(format('plan-{0}', variables('suffix')))]",
             "repoUrl": "https://github.com/alexkhil/AzCleaner.git"
           },
           "resources": [
             {
-              "name": "[variables('functionAppName')]",
               "type": "Microsoft.Web/sites",
               "apiVersion": "2021-02-01",
+              "name": "[variables('functionAppName_var')]",
               "location": "[parameters('location')]",
               "kind": "functionapp",
-              "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-              ],
               "identity": {
                 "type": "SystemAssigned"
               },
               "properties": {
-                "name": "[variables('functionAppName')]",
                 "clientAffinityEnabled": false,
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName_var'))]",
                 "siteConfig": {
                   "appSettings": [
                     {
@@ -118,43 +136,46 @@
                     },
                     {
                       "name": "WEBSITE_CONTENTSHARE",
-                      "value": "[variables('functionAppName')]"
+                      "value": "[variables('functionAppName_var')]"
                     },
                     {
                       "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[if(parameters('enableApplicationInsights'), reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))).InstrumentationKey, null())]"
+                      "value": "[if(parameters('enableApplicationInsights'), reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName_var')), '2020-02-02').InstrumentationKey, null())]"
                     },
                     {
                       "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2021-06-01').keys[0].value)]"
+                      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', variables('storageAccountName_var'), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName_var')), '2021-06-01').keys[0].value)]"
                     },
                     {
                       "name": "AzureWebJobsStorage",
-                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2021-06-01').keys[0].value)]"
+                      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}', variables('storageAccountName_var'), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName_var')), '2021-06-01').keys[0].value)]"
                     }
                   ]
                 }
               },
-              "resources": [
-                {
-                  "name": "web",
-                  "type": "sourcecontrols",
-                  "apiVersion": "2021-02-01",
-                  "dependsOn": [
-                    "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
-                  ],
-                  "properties": {
-                    "repoUrl": "[variables('repoURL')]",
-                    "branch": "main",
-                    "isManualIntegration": true
-                  }
-                }
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName_var'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName_var'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName_var'))]"
               ]
             },
             {
-              "name": "[variables('hostingPlanName')]",
+              "type": "Microsoft.Web/sites/sourcecontrols",
+              "apiVersion": "2021-02-01",
+              "name": "[format('{0}/{1}', variables('functionAppName_var'), 'web')]",
+              "properties": {
+                "repoUrl": "[variables('repoUrl')]",
+                "branch": "main",
+                "isManualIntegration": true
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('functionAppName_var'))]"
+              ]
+            },
+            {
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2021-02-01",
+              "name": "[variables('hostingPlanName_var')]",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Y1",
@@ -162,9 +183,9 @@
               }
             },
             {
-              "name": "[variables('storageAccountName')]",
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2021-06-01",
+              "name": "[variables('storageAccountName_var')]",
               "location": "[parameters('location')]",
               "kind": "StorageV2",
               "sku": {
@@ -173,9 +194,9 @@
             },
             {
               "condition": "[parameters('enableApplicationInsights')]",
-              "name": "[variables('applicationInsightsName')]",
               "type": "Microsoft.Insights/components",
               "apiVersion": "2020-02-02",
+              "name": "[variables('applicationInsightsName_var')]",
               "kind": "web",
               "location": "[parameters('location')]",
               "properties": {
@@ -186,20 +207,14 @@
           "outputs": {
             "functionAppPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2021-02-01', 'Full').identity.principalId]"
+              "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName_var')), '2021-02-01', 'Full').identity.principalId]"
             }
           }
         }
-      }
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2020-04-01-preview",
-      "name": "[variables('roleAssignmentName')]",
-      "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('contributorRoleId'))]",
-        "principalId": "[reference(variables('deploymentName')).outputs.functionAppPrincipalId.value]"
-      }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName_var'))]"
+      ]
     }
   ]
 }
