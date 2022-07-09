@@ -76,7 +76,8 @@ jobs:
         uses: EthanSK/git-branch-name-action@v1
 
       - name: Git Pull
-        run: git pull origin $GIT_BRANCH_NAME
+        run: |
+          git switch -c $GIT_BRANCH_NAME
 
       - name: Commit & Push changes
         uses: actions-js/push@master
