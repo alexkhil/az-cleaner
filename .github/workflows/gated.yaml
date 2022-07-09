@@ -75,6 +75,9 @@ jobs:
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
+      - name: Git
+        run: git swtich -c $GIT_BRANCH_NAME
+
       - name: Update ARM
         uses: actions-js/push@master
         with:
