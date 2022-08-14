@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoFixture.Xunit2;
 using AzCleaner.Func.Domain;
-using Moq;
-using Xunit;
 
 namespace AzCleaner.Func.Tests.Domain;
 
