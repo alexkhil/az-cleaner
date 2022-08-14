@@ -5,11 +5,12 @@
         <PackageProjectUrl>https://github.com/alexkhil/AzCleaner</PackageProjectUrl>
         <RepositoryUrl>https://github.com/alexkhil/AzCleaner</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
 
 </Project>

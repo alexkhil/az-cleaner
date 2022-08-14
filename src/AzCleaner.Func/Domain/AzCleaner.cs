@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace AzCleaner.Func.Domain;
 
 public class AzCleaner : IAzCleaner

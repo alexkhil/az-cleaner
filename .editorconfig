@@ -67,3 +67,6 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 tab_width = 4
+
+# IDE0058: Expression value is never used
+csharp_style_unused_value_expression_statement_preference = unused_local_variable

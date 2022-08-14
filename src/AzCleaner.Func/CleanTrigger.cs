@@ -1,7 +1,6 @@
-using System.Threading.Tasks;
+using System.Net;
 using AzCleaner.Func.Domain;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 
@@ -21,11 +20,11 @@ public class CleanTrigger
         _azCleaner.CleanAsync();
 
     [FunctionName("ManualTrigger")]
-    public async Task<IActionResult> CleanManuallyAsync(
-        [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethods.Delete), Route = "expiredresources")]
-        HttpRequest req)
+    public async Task<HttpResponseData> CleanManuallyAsync(
+        [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Delete), Route = "expiredresources")]
+        HttpRequestData req)
     {
         await _azCleaner.CleanAsync();
-        return new OkResult();
+        return req.CreateResponse(HttpStatusCode.OK);
     }
 }
