@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "18278950672045428964"
+      "version": "0.9.1.41621",
+      "templateHash": "6255463985492206003"
     }
   },
   "parameters": {
@@ -84,8 +84,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.8.9.13224",
-              "templateHash": "17682234002162566468"
+              "version": "0.9.1.41621",
+              "templateHash": "17564304339872416948"
             }
           },
           "parameters": {
@@ -124,7 +124,7 @@
                   "appSettings": [
                     {
                       "name": "FUNCTIONS_WORKER_RUNTIME",
-                      "value": "dotnet"
+                      "value": "dotnet-isolated"
                     },
                     {
                       "name": "FUNCTIONS_EXTENSION_VERSION",

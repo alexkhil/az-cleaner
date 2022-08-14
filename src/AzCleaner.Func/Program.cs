@@ -1,57 +1,54 @@
-using System;
-using System.Net.Http;
+using AzCleaner.Func;
 using AzCleaner.Func.DataAccess;
 using AzCleaner.Func.Domain;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.Management.ResourceGraph;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Polly;
 
-[assembly: FunctionsStartup(typeof(AzCleaner.Func.Startup))]
-
-namespace AzCleaner.Func;
-
-public class Startup : FunctionsStartup
-{
-    public override void Configure(IFunctionsHostBuilder builder)
+var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureServices((context, services) =>
     {
-        builder.Services.AddHttpClient();
+        services.AddHttpClient();
 
-        builder.Services.AddSingleton(
-            builder.GetContext().IsDevelopment()
+        services.AddSingleton(
+            context.HostingEnvironment.IsDevelopment()
                 ? SdkContext.AzureCredentialsFactory.FromFile("azureauth.json")
                 : SdkContext.AzureCredentialsFactory.FromSystemAssignedManagedServiceIdentity(
                     MSIResourceType.AppService, AzureEnvironment.AzureGlobalCloud));
 
-        builder.Services.AddScoped(s =>
+        services.AddScoped(s =>
         {
             var credentials = s.GetRequiredService<AzureCredentials>();
             return ResourceManager.Configure().Authenticate(credentials);
         });
 
-        builder.Services.AddScoped(s =>
+        services.AddScoped(s =>
         {
             var authenticated = s.GetRequiredService<ResourceManager.IAuthenticated>();
             return authenticated.WithSubscription(authenticated.GetDefaultSubscription());
         });
 
-        builder.Services.AddScoped<IResourceGraphClient>(s =>
+        services.AddScoped<IResourceGraphClient>(s =>
             new ResourceGraphClient(
                 s.GetRequiredService<AzureCredentials>(),
                 s.GetRequiredService<IHttpClientFactory>().CreateClient(),
                 disposeHttpClient: false));
 
-        builder.Services.AddScoped<AzRepository>();
-        builder.Services.AddScoped<IAzRepository>(s =>
+        services.AddScoped<AzRepository>();
+        services.AddScoped<IAzRepository>(s =>
             ActivatorUtilities.CreateInstance<ResilientAzRepository>(s, s.GetRequiredService<AzRepository>()));
 
-        builder.Services.AddSingleton<IAsyncPolicy>(_ =>
+        services.AddSingleton<IAsyncPolicy>(_ =>
             Policy.Handle<Exception>()
                 .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(new Random().Next(0, 1000)) })
                 .WithPolicyKey(PolicyNames.BasicRetry));
 
-        builder.Services.AddScoped<IAzCleaner, Domain.AzCleaner>();
-    }
-}
+        services.AddScoped<IAzCleaner, AzCleaner.Func.Domain.AzCleaner>();
+    })
+    .Build();
+
+await host.RunAsync();

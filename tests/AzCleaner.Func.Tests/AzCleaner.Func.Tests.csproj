@@ -27,6 +27,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="AutoFixture.Xunit2" />
+        <Using Include="Moq" />
+        <Using Include="Xunit" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\src\AzCleaner.Func\AzCleaner.Func.csproj" />
     </ItemGroup>
 

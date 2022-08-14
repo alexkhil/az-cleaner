@@ -1,16 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>.net6.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <AzureFunctionsVersion>V4</AzureFunctionsVersion>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" />
         <PackageReference Include="Microsoft.Azure.Management.Fluent" />
         <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" />
+        <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" />
         <PackageReference Include="Microsoft.Extensions.Http" />
-        <PackageReference Include="Microsoft.NET.Sdk.Functions" />
         <PackageReference Include="Polly" />
         <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
