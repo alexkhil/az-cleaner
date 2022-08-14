@@ -20,7 +20,7 @@ resource functionAppName 'Microsoft.Web/sites@2021-02-01' = {
     clientAffinityEnabled: false
     serverFarmId: hostingPlanName.id
     siteConfig: {
-      use32BitWorkerProcess: false,
+      use32BitWorkerProcess: false
       appSettings: [
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
