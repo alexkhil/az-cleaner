@@ -32,7 +32,7 @@ jobs:
 
       - name: Set up .Net global tools
         run: |
-          dotnet tool install --global dotnet-sonarscanner --version 5.7.1
+          dotnet tool install --global dotnet-sonarscanner
           dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Checkout
@@ -76,6 +76,11 @@ jobs:
           -reports:${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml
           -targetdir:${{ env.TESTS_OUTPUT }}/coverage/sonar
           -reporttypes:SonarQube
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tests
+          path: ${{ env.TESTS_OUTPUT }}
 
       - name: End Sonar
         env:
