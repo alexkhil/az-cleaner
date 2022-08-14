@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: "zulu"
-          java-version: "11.0.15"
+          java-version: "11"
 
       - name: Set up .NET 6
         uses: actions/setup-dotnet@v2
