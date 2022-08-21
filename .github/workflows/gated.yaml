@@ -31,13 +31,12 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Set up .Net global tools
-        run: dotnet tool install --global dotnet-sonarscanner
+        run: >
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet tool install --global dotnet-coverage
 
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: .Net Restore
-        run: dotnet restore
 
       - name: Begin Sonar
         env:
@@ -49,27 +48,33 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.opencover.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/opencover/*.opencover.xml"
-          /d:sonar.cs.vstest.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/vstest/*.trx"
+          /d:sonar.cs.vscoveragexml.reportsPaths=${{ env.TESTS_OUTPUT }}/coverage/coverage.xml
+
+      - name: .Net Restore
+        run: dotnet restore
 
       - name: Build Release
         run: >
           dotnet build
           -c Release
+          --no-incremental
           --no-restore
           --nologo
 
       - name: .Net Test
         run: >
-          dotnet test
-          -c Release
-          -l:trx
-          -r "${{ env.TESTS_OUTPUT }}/coverage/vstest"
-          /p:CollectCoverage=true
-          /p:CoverletOutputFormat=opencover
-          /p:CoverletOutput="${{ env.TESTS_OUTPUT }}/coverage/opencover/"
+          dotnet-coverage collect 'dotnet test'
+          -f xml
+          -o "${{ env.TESTS_OUTPUT }}/coverage/coverage.xml"
           --no-restore
           --no-build
+        # dotnet test
+        # -c Release
+        # -l:trx
+        # -r "${{ env.TESTS_OUTPUT }}/coverage/vstest"
+        # /p:CollectCoverage=true
+        # /p:CoverletOutputFormat=opencover
+        # /p:CoverletOutput="${{ env.TESTS_OUTPUT }}/coverage/opencover/"
 
       - uses: actions/upload-artifact@v3
         with:
