@@ -34,6 +34,7 @@ jobs:
         run: |
           dotnet tool install --global dotnet-sonarscanner
           dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet tool install --global dotnet-coverage
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,7 +52,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/SonarQube.xml"
+          /d:sonar.cs.vscoveragexml.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
 
       - name: Build Release
         run: >
@@ -62,13 +63,16 @@ jobs:
 
       - name: .Net Test
         run: >
-          dotnet test
-          --collect "XPlat Code coverage"
-          -r "${{ env.TESTS_OUTPUT }}/coverage/dotnet"
-          -c Release
-          --no-restore
-          --no-build
-          --nologo
+          dotnet-coverage collect "dotnet test -c Release --no-restore --no-build"
+          -f "xml"
+          -o "${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+        # dotnet test
+        # --collect "XPlat Code coverage"
+        # -r "${{ env.TESTS_OUTPUT }}/coverage/dotnet"
+        # -c Release
+        # --no-restore
+        # --no-build
+        # --nologo
 
       - name: Generate Sonar Coverage
         run: >
