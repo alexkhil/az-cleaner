@@ -67,6 +67,7 @@ jobs:
           -r "${{ env.TESTS_OUTPUT }}/coverage/sonar"
           /p:CollectCoverage=true
           /p:CoverletOutputFormat=opencover
+          /p:CoverletOutput="${{ env.TESTS_OUTPUT }}/coverage/sonar"
           --no-restore
           --no-build
 
