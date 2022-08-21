@@ -33,7 +33,7 @@ jobs:
       - name: Set up .Net global tools
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet tool install --global dotnet-coverage
+          dotnet tool install --global coverlet.console
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,7 +51,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.vscoveragexml.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+          /d:sonar.cs.opencover.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
 
       - name: Build Release
         run: >
@@ -62,9 +62,11 @@ jobs:
 
       - name: .Net Test
         run: >
-          dotnet-coverage collect "dotnet test -c Release --no-restore --no-build"
-          -f "xml"
-          -o "${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+          coverlet .\CovExample.Tests\bin\Debug\net6.0\CovExample.Tests.dll
+          --target "dotnet"
+          --targetargs "test -c Release --no-restore --no-build"
+          -f="opencover"
+          -o="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
 
       - uses: actions/upload-artifact@v3
         with:
