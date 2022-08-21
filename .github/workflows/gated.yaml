@@ -62,11 +62,11 @@ jobs:
 
       - name: .Net Test
         run: >
-          coverlet .\CovExample.Tests\bin\Debug\net6.0\CovExample.Tests.dll
+          coverlet
           --target "dotnet"
           --targetargs "test -c Release --no-restore --no-build"
-          -f="opencover"
           -o="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+          -f="opencover"
 
       - uses: actions/upload-artifact@v3
         with:
