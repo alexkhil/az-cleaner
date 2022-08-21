@@ -74,12 +74,12 @@ jobs:
         # --no-build
         # --nologo
 
-      - name: Generate Sonar Coverage
-        run: >
-          reportgenerator
-          -reports:"${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml"
-          -targetdir:"${{ env.TESTS_OUTPUT }}/coverage/sonar"
-          -reporttypes:SonarQube
+      # - name: Generate Sonar Coverage
+      #   run: >
+      #     reportgenerator
+      #     -reports:"${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml"
+      #     -targetdir:"${{ env.TESTS_OUTPUT }}/coverage/sonar"
+      #     -reporttypes:SonarQube
 
       - name: Generate Sonar Coverage
         run: ls ${{ env.TESTS_OUTPUT }}/coverage/sonar
