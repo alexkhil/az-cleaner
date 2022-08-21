@@ -34,8 +34,6 @@ jobs:
         run: |
           dotnet tool install --global dotnet-sonarscanner
           dotnet tool install --global dotnet-reportgenerator-globaltool
-          dotnet tool install --global dotnet-coverage
-          dotnet tool install --global coverlet.console
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -53,7 +51,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.opencover.reportsPaths=coverage.xml
+          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/*.xml"
 
       - name: Build Release
         run: >
@@ -64,28 +62,20 @@ jobs:
 
       - name: .Net Test
         run: >
-          coverlet .
-          --target "dotnet"
-          --targetargs "test --no-build -c Release"
-          -f=opencover
-          -o="coverage.xml"
+          dotnet test
+          --collect "XPlat Code coverage"
+          -r "${{ env.TESTS_OUTPUT }}/coverage/dotnet"
+          -c Release
+          --no-restore
+          --no-build
+          --nologo
 
-      # dotnet test
-      # --collect "XPlat Code coverage"
-      # --results-directory ${{ env.TESTS_OUTPUT }}/coverage
-      # --logger "trx;LogFileName=unittests.trx"
-      # -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
-      # -c Release
-      # --no-restore
-      # --no-build
-      # --nologo
-
-      # - name: Generate Sonar Coverage
-      #   run: >
-      #     reportgenerator
-      #     -reports:${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml
-      #     -targetdir:${{ env.TESTS_OUTPUT }}/coverage/sonar
-      #     -reporttypes:SonarQube
+      - name: Generate Sonar Coverage
+        run: >
+          reportgenerator
+          -reports:"${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml"
+          -targetdir:"${{ env.TESTS_OUTPUT }}/coverage/sonar"
+          -reporttypes:SonarQube
 
       - uses: actions/upload-artifact@v3
         with:
@@ -108,9 +98,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Display current branch
-        run: echo git branch --show-current
 
       - name: Bicep Build
         uses: Azure/bicep-build-action@v1.0.0
