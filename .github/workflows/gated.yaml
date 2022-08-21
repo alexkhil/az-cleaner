@@ -69,6 +69,9 @@ jobs:
           -f="opencover"
           ./tests/AzCleaner.Func.Tests/bin/Release/net6.0/AzCleaner.Func.Tests.dll
 
+      - name: Fix path
+        run: sed -i 's/\/home\/runner\/work\/az-cleaner\/az-cleaner//' ${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml
+
       - uses: actions/upload-artifact@v3
         with:
           name: tests
