@@ -33,13 +33,10 @@ jobs:
       - name: Set up .Net global tools
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet tool install --global dotnet-coverage
 
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: .Net Restore
-        run: dotnet restore
 
       - name: Begin Sonar
         env:
@@ -51,31 +48,29 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/SonarQube.xml"
+          /d:sonar.cs.vscoveragexml.reportsPaths=${{ env.TESTS_OUTPUT }}/coverage/coverage.xml
+
+      - name: .Net Restore
+        run: dotnet restore
 
       - name: Build Release
         run: >
           dotnet build
           -c Release
+          --no-incremental
           --no-restore
           --nologo
 
       - name: .Net Test
         run: >
-          dotnet test
-          --collect "XPlat Code coverage"
-          -r ${{ env.TESTS_OUTPUT }}/coverage/dotnet
-          -c Release
-          --no-restore
-          --no-build
-          --nologo
+          dotnet-coverage collect 'dotnet test -c Release --no-restore --no-build'
+          -f "xml"
+          -o "${{ env.TESTS_OUTPUT }}/coverage/coverage.xml"
 
-      - name: Generate Sonar Coverage
-        run: >
-          reportgenerator
-          -reports:${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml
-          -targetdir:${{ env.TESTS_OUTPUT }}/coverage/sonar
-          -reporttypes:SonarQube
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tests
+          path: ${{ env.TESTS_OUTPUT }}
 
       - name: End Sonar
         env:
