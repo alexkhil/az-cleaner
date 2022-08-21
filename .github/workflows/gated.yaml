@@ -52,7 +52,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.vscoveragexml.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+          /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
 
       - name: Build Release
         run: >
@@ -65,7 +65,7 @@ jobs:
         run: >
           dotnet-coverage collect 'dotnet test'
           -f "xml"
-          -o "${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
+          -o "coverage.xml"
       #     dotnet test
       #     --collect "XPlat Code coverage"
       #     -r ${{ env.TESTS_OUTPUT }}/coverage/dotnet
