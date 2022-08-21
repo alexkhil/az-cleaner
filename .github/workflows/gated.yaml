@@ -67,6 +67,7 @@ jobs:
           --targetargs "test -c Release --no-restore --no-build"
           -o="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
           -f="opencover"
+          ./
 
       - uses: actions/upload-artifact@v3
         with:
