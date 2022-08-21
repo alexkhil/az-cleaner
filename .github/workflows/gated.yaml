@@ -51,7 +51,7 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/*.xml"
+          /d:sonar.coverageReportPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar"
 
       - name: Build Release
         run: >
