@@ -77,6 +77,9 @@ jobs:
           -targetdir:"${{ env.TESTS_OUTPUT }}/coverage/sonar"
           -reporttypes:SonarQube
 
+      - name: Generate Sonar Coverage
+        run: ls ${{ env.TESTS_OUTPUT }}/coverage/sonar
+
       - uses: actions/upload-artifact@v3
         with:
           name: tests
