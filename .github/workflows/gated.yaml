@@ -66,13 +66,6 @@ jobs:
           dotnet-coverage collect 'dotnet test -c Release --no-restore --no-build'
           -f "xml"
           -o "${{ env.TESTS_OUTPUT }}/coverage/coverage.xml"
-        # dotnet test
-        # -c Release
-        # -l:trx
-        # -r "${{ env.TESTS_OUTPUT }}/coverage/vstest"
-        # /p:CollectCoverage=true
-        # /p:CoverletOutputFormat=opencover
-        # /p:CoverletOutput="${{ env.TESTS_OUTPUT }}/coverage/opencover/"
 
       - uses: actions/upload-artifact@v3
         with:
