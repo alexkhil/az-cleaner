@@ -52,7 +52,8 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
+          /d:sonar.cs.vstest.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/**/*.trx"
+          /d:sonar.cs.opencover.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/**/coverage.opencover.xml"
 
       - name: Build Release
         run: >
@@ -63,16 +64,15 @@ jobs:
 
       - name: .Net Test
         run: >
-          dotnet-coverage collect 'dotnet test'
-          -f "xml"
-          -o "coverage.xml"
-      #     dotnet test
-      #     --collect "XPlat Code coverage"
-      #     -r ${{ env.TESTS_OUTPUT }}/coverage/dotnet
-      #     -c Release
-      #     --no-restore
-      #     --no-build
-      #     --nologo
+          dotnet test
+          --collect "XPlat Code coverage"
+          --results-directory ${{ env.TESTS_OUTPUT }}/coverage
+          --logger "trx;LogFileName=unittests.trx"
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          -c Release
+          --no-restore
+          --no-build
+          --nologo
 
       # - name: Generate Sonar Coverage
       #   run: >
@@ -102,6 +102,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Display current branch
+        run: git branch --show-current
 
       - name: Bicep Build
         uses: Azure/bicep-build-action@v1.0.0
