@@ -63,11 +63,9 @@ jobs:
 
       - name: .Net Test
         run: >
-          dotnet-coverage collect 'dotnet test'
-          -f xml
+          dotnet-coverage collect 'dotnet test -c Release --no-restore --no-build'
+          -f "xml"
           -o "${{ env.TESTS_OUTPUT }}/coverage/coverage.xml"
-          --no-restore
-          --no-build
         # dotnet test
         # -c Release
         # -l:trx
