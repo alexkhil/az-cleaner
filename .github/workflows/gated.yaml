@@ -52,6 +52,8 @@ jobs:
           /o:"alexkhil"
           /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.sources="./src"
+          /d:sonar.tests="./tests"
           /d:sonar.cs.vscoveragexml.reportsPaths="${{ env.TESTS_OUTPUT }}/coverage/sonar/coverage.xml"
 
       - name: Build Release
@@ -80,9 +82,6 @@ jobs:
       #     -reports:"${{ env.TESTS_OUTPUT }}/coverage/dotnet/**/*.xml"
       #     -targetdir:"${{ env.TESTS_OUTPUT }}/coverage/sonar"
       #     -reporttypes:SonarQube
-
-      - name: Generate Sonar Coverage
-        run: ls ${{ env.TESTS_OUTPUT }}/coverage/sonar
 
       - uses: actions/upload-artifact@v3
         with:
