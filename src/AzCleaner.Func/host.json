@@ -4,7 +4,7 @@
     "logging": {
         "logLevel": {
             "default": "Error",
-            "AzCleaner.Func": "Trace"
+            "AzCleaner.Func": "Information"
         },
         "applicationInsights": {
             "samplingSettings": {
