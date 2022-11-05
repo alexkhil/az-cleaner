@@ -1,7 +1,6 @@
 using AzCleaner.Func.Domain;
 using AzCleaner.Func.Tests.Infrastructure;
-using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 
 namespace AzCleaner.Func.Tests;
 
