@@ -13,14 +13,8 @@
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" />
-        <PackageReference Include="Microsoft.Azure.Management.Fluent" />
-        <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" />
-        <PackageReference Include="Microsoft.Extensions.Azure" />
-        <PackageReference Include="Microsoft.Extensions.Http" />
-        <PackageReference Include="Polly" />
-        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <ItemGroup>

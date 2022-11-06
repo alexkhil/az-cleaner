@@ -1,32 +1,28 @@
 using AzCleaner.Func.Domain;
-using Microsoft.Azure.Management.ResourceGraph;
-using Microsoft.Azure.Management.ResourceGraph.Models;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
+using Azure;
+using Azure.Core;
+using Azure.ResourceManager;
+using Azure.ResourceManager.ResourceGraph;
+using Azure.ResourceManager.ResourceGraph.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace AzCleaner.Func.DataAccess;
 
-internal class AzRepository : IAzRepository
+public class AzRepository : IAzRepository
 {
-    private readonly IResourceManager _resourceManager;
-    private readonly IResourceGraphClient _resourceGraphClient;
+    private readonly ILogger<AzRepository> logger;
+    private readonly ArmClient client;
 
-    public AzRepository(
-        IResourceManager resourceManager,
-        IResourceGraphClient resourceGraphClient)
+    public AzRepository(ILogger<AzRepository> logger, ArmClient client)
     {
-        _resourceManager = resourceManager;
-        _resourceGraphClient = resourceGraphClient;
+        this.logger = logger;
+        this.client = client;
     }
 
-    public Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync(CancellationToken cancellationToken) =>
-        ExecuteQuery(@"
-            Resources
-            | where todatetime(['tags']['expireOn']) < now()
-            | project name = id");
-
-    public Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync(CancellationToken cancellationToken) =>
-        ExecuteQuery(@"
+    public Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync(
+        CancellationToken cancellationToken) =>
+        ExecuteQueryAsync(@"
             ResourceContainers
             | where type == ""microsoft.resources/subscriptions/resourcegroups""
             | extend rgAndSub = strcat(resourceGroup, ""--"", subscriptionId)
@@ -37,29 +33,71 @@ internal class AzRepository : IAzRepository
             ) on rgAndSub
             | where isnull(count_)
             | project-away rgAndSub1, count_
-            | project name");
+            | project name",
+            cancellationToken);
 
-    public Task DeleteResourcesAsync(IEnumerable<string> resourceIds) =>
-        Task.WhenAll(resourceIds.Select(DeleteResourceAsync));
+    public Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync(
+        CancellationToken cancellationToken) =>
+        ExecuteQueryAsync(@"
+            Resources
+            | where todatetime(['tags']['expireOn']) < now()
+            | project name = id",
+            cancellationToken);
 
-    public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
-        Task.WhenAll(resourceGroupNames.Select(DeleteResourceGroupAsync));
-
-    private Task DeleteResourceAsync(string resourceId) =>
-        _resourceManager.GenericResources.DeleteAsync(
-            ResourceUtils.GroupFromResourceId(resourceId),
-            ResourceUtils.ResourceProviderFromResourceId(resourceId),
-            ResourceUtils.ParentResourcePathFromResourceId(resourceId) ?? string.Empty,
-            ResourceUtils.ResourceTypeFromResourceId(resourceId),
-            ResourceUtils.NameFromResourceId(resourceId));
-
-    private Task DeleteResourceGroupAsync(string resourceGroupName) =>
-        _resourceManager.ResourceGroups.DeleteByNameAsync(resourceGroupName);
-
-    private async Task<IReadOnlyCollection<string>> ExecuteQuery(string query)
+    public Task DeleteResourcesAsync(
+        IEnumerable<string> resourceIds,
+        CancellationToken cancellationToken)
     {
-        var subscriptions = new[] { _resourceManager.SubscriptionId };
-        var response = await _resourceGraphClient.ResourcesAsync(new QueryRequest(subscriptions, query));
-        return response.ToResources();
+        var deleteResourceTasks = resourceIds.Select(async resourceId =>
+        {
+            var resourceIdentifier = new ResourceIdentifier(resourceId);
+            var resource = await client.GetGenericResources().GetAsync(resourceIdentifier, cancellationToken);
+            logger.LogInformation("Going to delete: {resource}", resourceId);
+            await resource.Value.DeleteAsync(WaitUntil.Started, cancellationToken);
+        }).ToList();
+
+        return Task.WhenAll(deleteResourceTasks);
+    }
+
+    public Task DeleteResourceGroupsAsync(
+        IEnumerable<string> resourceGroupNames,
+        CancellationToken cancellationToken)
+    {
+        var deleteGroupTasks = resourceGroupNames.Select(async resourceGroupName =>
+        {
+            var defaultSub = await client.GetDefaultSubscriptionAsync(cancellationToken);
+            var resourceGroup = await defaultSub.GetResourceGroupAsync(resourceGroupName, cancellationToken);
+            await resourceGroup.Value.DeleteAsync(WaitUntil.Started, default, cancellationToken);
+        }).ToList();
+
+        return Task.WhenAll(deleteGroupTasks);
+    }
+
+    private async Task<IReadOnlyCollection<string>> ExecuteQueryAsync(
+        string query,
+        CancellationToken cancellationToken)
+    {
+        var defaultSub = await client.GetDefaultSubscriptionAsync(cancellationToken);
+        var tenants = client.GetTenants().GetAllAsync(cancellationToken);
+        var expiredResources = new HashSet<string>();
+        await foreach (var tenant in tenants)
+        {
+            var resourceQuery = new QueryContent(query)
+            {
+                Subscriptions = { defaultSub.Data.SubscriptionId }
+            };
+            var resources = await tenant.ResourcesAsync(resourceQuery, cancellationToken);
+            foreach (var resource in ToResources(resources.Value))
+            {
+                expiredResources.Add(resource);
+            }
+        }
+
+        return expiredResources;
+
+        static IReadOnlyCollection<string> ToResources(QueryResponse response) =>
+            response.Count > 0
+                ? JArray.Parse(response.Data.ToString()).Select(x => x["name"].ToString()).ToList()
+                : new List<string>();
     }
 }

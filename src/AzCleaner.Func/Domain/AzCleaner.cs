@@ -12,9 +12,9 @@ public class AzCleaner : IAzCleaner
     public async Task CleanAsync(CancellationToken cancellationToken)
     {
         var expiredResources = await _azRepository.GetExpiredResourceIdsAsync(cancellationToken);
-        await _azRepository.DeleteResourcesAsync(expiredResources);
+        await _azRepository.DeleteResourcesAsync(expiredResources, cancellationToken);
 
         var expiredResourceGroups = await _azRepository.GetEmptyResourceGroupNamesAsync(cancellationToken);
-        await _azRepository.DeleteResourceGroupsAsync(expiredResourceGroups);
+        await _azRepository.DeleteResourceGroupsAsync(expiredResourceGroups, cancellationToken);
     }
 }

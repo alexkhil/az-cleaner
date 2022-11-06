@@ -6,7 +6,7 @@ public interface IAzRepository
 
     Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync(CancellationToken cancellationToken);
 
-    Task DeleteResourcesAsync(IEnumerable<string> resourceIds);
+    Task DeleteResourcesAsync(IEnumerable<string> resourceIds, CancellationToken cancellationToken);
 
-    Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames);
+    Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames, CancellationToken cancellationToken);
 }

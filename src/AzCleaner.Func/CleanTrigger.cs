@@ -15,15 +15,18 @@ public class CleanTrigger
     }
 
     [Function("AutomaticTrigger")]
-    public Task CleanAutomaticallyAsync([TimerTrigger("0 0 */12 * * *")] TimerInfo timer) =>
-        _azCleaner.CleanAsync();
+    public Task CleanAutomaticallyAsync(
+        [TimerTrigger("0 0 */12 * * *")] TimerInfo timer,
+        CancellationToken cancellationToken) =>
+        _azCleaner.CleanAsync(cancellationToken);
 
     [Function("ManualTrigger")]
     public async Task<HttpResponseData> CleanManuallyAsync(
         [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Delete), Route = "expiredresources")]
-        HttpRequestData req)
+        HttpRequestData req,
+        CancellationToken cancellationToken)
     {
-        await _azCleaner.CleanAsync();
+        await _azCleaner.CleanAsync(cancellationToken);
         return req.CreateResponse(HttpStatusCode.OK);
     }
 }

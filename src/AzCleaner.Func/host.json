@@ -1,12 +1,10 @@
 {
     "version": "2.0",
-    "functions": [ "TestFunc" ],
     "functionTimeout": "00:10:00",
     "logging": {
-        "logLevel": {
-            "default": "Warning",
-            "AzCleaner.Func": "Information"
-        },
+      "logLevel": {
+        "default": "Information"
+      },
         "applicationInsights": {
             "samplingSettings": {
                 "isEnabled": true
