@@ -10,7 +10,7 @@ var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices((context, services) =>
     {
-        services.AddSingleton<TokenCredential, AzureCliCredential>();
+        services.AddSingleton<TokenCredential, DefaultAzureCredential>();
         services.AddSingleton<ArmClient>();
         services.AddTransient<IAzRepository, AzRepository>();
         services.AddTransient<IAzCleaner, AzCleaner.Func.Domain.AzCleaner>();
