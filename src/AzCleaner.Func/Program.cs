@@ -1,53 +1,59 @@
-using AzCleaner.Func;
 using AzCleaner.Func.DataAccess;
 using AzCleaner.Func.Domain;
-using Microsoft.Azure.Management.ResourceGraph;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
+using Azure.Core;
+using Azure.Identity;
+using Azure.ResourceManager;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Polly;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices((context, services) =>
     {
-        services.AddHttpClient();
+        services.AddSingleton<TokenCredential, AzureCliCredential>();
+        services.AddSingleton<ArmClient>();
+        services.AddTransient<IAzRepository, AzV2Repository>();
 
-        services.AddSingleton(
-            context.HostingEnvironment.IsDevelopment()
-                ? SdkContext.AzureCredentialsFactory.FromFile("azureauth.json")
-                : SdkContext.AzureCredentialsFactory.FromSystemAssignedManagedServiceIdentity(
-                    MSIResourceType.AppService, AzureEnvironment.AzureGlobalCloud));
+        //services.AddAzureClients(x =>
+        //{
+        //    x.UseCredential(new DefaultAzureCredential());
+        //    // x.ConfigureDefaults(context.Configuration.GetSection("AzureDefaults"));
+        //});
 
-        services.AddScoped(s =>
-        {
-            var credentials = s.GetRequiredService<AzureCredentials>();
-            return ResourceManager.Configure().Authenticate(credentials);
-        });
+        //services.AddSingleton(
+        //    context.HostingEnvironment.IsDevelopment()
+        //        ? SdkContext.AzureCredentialsFactory.FromFile("azureauth.json")
+        //        : SdkContext.AzureCredentialsFactory.FromSystemAssignedManagedServiceIdentity(
+        //            MSIResourceType.AppService, AzureEnvironment.AzureGlobalCloud));
 
-        services.AddScoped(s =>
-        {
-            var authenticated = s.GetRequiredService<ResourceManager.IAuthenticated>();
-            return authenticated.WithSubscription(authenticated.GetDefaultSubscription());
-        });
+        //services.AddScoped(s =>
+        //{
+        //    var credentials = s.GetRequiredService<AzureCredentials>();
+        //    return ResourceManager.Configure().Authenticate(credentials);
+        //});
 
-        services.AddScoped<IResourceGraphClient>(s =>
-            new ResourceGraphClient(
-                s.GetRequiredService<AzureCredentials>(),
-                s.GetRequiredService<IHttpClientFactory>().CreateClient(),
-                disposeHttpClient: false));
+        //services.AddScoped(s =>
+        //{
+        //    var authenticated = s.GetRequiredService<ResourceManager.IAuthenticated>();
+        //    return authenticated.WithSubscription(authenticated.GetDefaultSubscription());
+        //});
 
-        services.AddScoped<AzRepository>();
-        services.AddScoped<IAzRepository>(s =>
-            ActivatorUtilities.CreateInstance<ResilientAzRepository>(s, s.GetRequiredService<AzRepository>()));
+        //services.AddScoped<IResourceGraphClient>(s =>
+        //    new ResourceGraphClient(
+        //        s.GetRequiredService<AzureCredentials>(),
+        //        s.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        //        disposeHttpClient: false));
 
-        services.AddSingleton<IAsyncPolicy>(_ =>
-            Policy.Handle<Exception>()
-                .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(new Random().Next(0, 1000)) })
-                .WithPolicyKey(PolicyNames.BasicRetry));
+        //services.AddScoped<AzRepository>();
+        //services.AddScoped<IAzRepository>(s =>
+        //    ActivatorUtilities.CreateInstance<ResilientAzRepository>(s, s.GetRequiredService<AzRepository>()));
 
-        services.AddScoped<IAzCleaner, AzCleaner.Func.Domain.AzCleaner>();
+        //services.AddSingleton<IAsyncPolicy>(_ =>
+        //    Policy.Handle<Exception>()
+        //        .WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(2) + TimeSpan.FromMilliseconds(new Random().Next(0, 1000)) })
+        //        .WithPolicyKey(PolicyNames.BasicRetry));
+
+        //services.AddScoped<IAzCleaner, AzCleaner.Func.Domain.AzCleaner>();
     })
     .Build();
 

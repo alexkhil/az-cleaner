@@ -1,9 +1,10 @@
 {
     "version": "2.0",
+    "functions": [ "TestFunc" ],
     "functionTimeout": "00:10:00",
     "logging": {
         "logLevel": {
-            "default": "Error",
+            "default": "Warning",
             "AzCleaner.Func": "Information"
         },
         "applicationInsights": {

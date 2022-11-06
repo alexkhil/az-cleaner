@@ -12,7 +12,7 @@ public class AzCleanerTests
     {
         // Arrange
         azRepositoryMock
-            .Setup(x => x.GetExpiredResourceIdsAsync())
+            .Setup(x => x.GetExpiredResourceIdsAsync(CancellationToken.None))
             .ReturnsAsync(expiredResourceIds);
 
         azRepositoryMock
@@ -36,7 +36,7 @@ public class AzCleanerTests
     {
         // Arrange
         azRepositoryMock
-            .Setup(x => x.GetEmptyResourceGroupNamesAsync())
+            .Setup(x => x.GetEmptyResourceGroupNamesAsync(CancellationToken.None))
             .ReturnsAsync(expiredResourceGroupIds);
 
         azRepositoryMock

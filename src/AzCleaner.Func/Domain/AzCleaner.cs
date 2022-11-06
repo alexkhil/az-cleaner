@@ -9,12 +9,12 @@ public class AzCleaner : IAzCleaner
         _azRepository = azRepository;
     }
 
-    public async Task CleanAsync()
+    public async Task CleanAsync(CancellationToken cancellationToken)
     {
-        var expiredResources = await _azRepository.GetExpiredResourceIdsAsync();
+        var expiredResources = await _azRepository.GetExpiredResourceIdsAsync(cancellationToken);
         await _azRepository.DeleteResourcesAsync(expiredResources);
 
-        var expiredResourceGroups = await _azRepository.GetEmptyResourceGroupNamesAsync();
+        var expiredResourceGroups = await _azRepository.GetEmptyResourceGroupNamesAsync(cancellationToken);
         await _azRepository.DeleteResourceGroupsAsync(expiredResourceGroups);
     }
 }

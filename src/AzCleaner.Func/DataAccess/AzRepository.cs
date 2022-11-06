@@ -11,19 +11,21 @@ internal class AzRepository : IAzRepository
     private readonly IResourceManager _resourceManager;
     private readonly IResourceGraphClient _resourceGraphClient;
 
-    public AzRepository(IResourceManager resourceManager, IResourceGraphClient resourceGraphClient)
+    public AzRepository(
+        IResourceManager resourceManager,
+        IResourceGraphClient resourceGraphClient)
     {
         _resourceManager = resourceManager;
         _resourceGraphClient = resourceGraphClient;
     }
 
-    public Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync() =>
+    public Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync(CancellationToken cancellationToken) =>
         ExecuteQuery(@"
             Resources
             | where todatetime(['tags']['expireOn']) < now()
             | project name = id");
 
-    public Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync() =>
+    public Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync(CancellationToken cancellationToken) =>
         ExecuteQuery(@"
             ResourceContainers
             | where type == ""microsoft.resources/subscriptions/resourcegroups""
@@ -40,7 +42,10 @@ internal class AzRepository : IAzRepository
     public Task DeleteResourcesAsync(IEnumerable<string> resourceIds) =>
         Task.WhenAll(resourceIds.Select(DeleteResourceAsync));
 
-    public Task DeleteResourceAsync(string resourceId) =>
+    public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
+        Task.WhenAll(resourceGroupNames.Select(DeleteResourceGroupAsync));
+
+    private Task DeleteResourceAsync(string resourceId) =>
         _resourceManager.GenericResources.DeleteAsync(
             ResourceUtils.GroupFromResourceId(resourceId),
             ResourceUtils.ResourceProviderFromResourceId(resourceId),
@@ -48,10 +53,7 @@ internal class AzRepository : IAzRepository
             ResourceUtils.ResourceTypeFromResourceId(resourceId),
             ResourceUtils.NameFromResourceId(resourceId));
 
-    public Task DeleteResourceGroupsAsync(IEnumerable<string> resourceGroupNames) =>
-        Task.WhenAll(resourceGroupNames.Select(DeleteResourceGroupAsync));
-
-    public Task DeleteResourceGroupAsync(string resourceGroupName) =>
+    private Task DeleteResourceGroupAsync(string resourceGroupName) =>
         _resourceManager.ResourceGroups.DeleteByNameAsync(resourceGroupName);
 
     private async Task<IReadOnlyCollection<string>> ExecuteQuery(string query)

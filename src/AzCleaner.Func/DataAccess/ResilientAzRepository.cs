@@ -20,16 +20,16 @@ internal class ResilientAzRepository : IAzRepository
         _retryPolicy = retryPolicy;
     }
 
-    public async Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync()
+    public async Task<IReadOnlyCollection<string>> GetExpiredResourceIdsAsync(CancellationToken cancellationToken)
     {
-        var resources = await _azRepository.GetExpiredResourceIdsAsync();
+        var resources = await _azRepository.GetExpiredResourceIdsAsync(cancellationToken);
         _logger.LogTrace("Found {count} expired resources", resources.Count);
         return resources;
     }
 
-    public async Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync()
+    public async Task<IReadOnlyCollection<string>> GetEmptyResourceGroupNamesAsync(CancellationToken cancellationToken)
     {
-        var resources = await _azRepository.GetEmptyResourceGroupNamesAsync();
+        var resources = await _azRepository.GetEmptyResourceGroupNamesAsync(cancellationToken);
         _logger.LogTrace("Found {count} expired resource groups", resources.Count);
         return resources;
     }

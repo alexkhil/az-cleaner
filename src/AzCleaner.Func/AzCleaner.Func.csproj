@@ -7,6 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Azure.Identity" />
+        <PackageReference Include="Azure.ResourceManager" />
+        <PackageReference Include="Azure.ResourceManager.ResourceGraph" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" />
@@ -14,6 +17,7 @@
         <PackageReference Include="Microsoft.Azure.Management.ResourceGraph" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" />
+        <PackageReference Include="Microsoft.Extensions.Azure" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Polly" />
         <PackageReference Include="Newtonsoft.Json" />
