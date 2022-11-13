@@ -443,7 +443,5 @@ $RECYCLE.BIN/
 
 /src/AzCleaner.Func/azureauth.json
 test.http
-
-# Nuke build
-.nuke/*
-.sonarqube/*
+.sonarqube
+.nuke
