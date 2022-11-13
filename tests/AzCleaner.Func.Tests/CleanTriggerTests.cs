@@ -1,7 +1,6 @@
 using AzCleaner.Func.Domain;
 using AzCleaner.Func.Tests.Infrastructure;
-using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 
 namespace AzCleaner.Func.Tests;
 
@@ -13,9 +12,9 @@ public class CleanTriggerTests
         TimerInfo timer,
         CleanTrigger sut)
     {
-        await sut.CleanAutomaticallyAsync(timer);
+        await sut.CleanAutomaticallyAsync(timer, CancellationToken.None);
 
-        azCleanerMock.Verify(x => x.CleanAsync(), Times.Once);
+        azCleanerMock.Verify(x => x.CleanAsync(CancellationToken.None), Times.Once);
     }
 
     [Theory, AutoMoqData]
@@ -24,8 +23,8 @@ public class CleanTriggerTests
         MockHttpRequestData request,
         CleanTrigger sut)
     {
-        await sut.CleanManuallyAsync(request);
+        await sut.CleanManuallyAsync(request, CancellationToken.None);
 
-        azCleanerMock.Verify(x => x.CleanAsync(), Times.Once);
+        azCleanerMock.Verify(x => x.CleanAsync(CancellationToken.None), Times.Once);
     }
 }

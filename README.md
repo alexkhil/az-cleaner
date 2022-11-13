@@ -6,7 +6,7 @@
 
 ## How does it workds
 
-By Default, the tool will get triggered every 12 hours and search for any resources tagged with `expireOn` with a value in the past, and delete them. Once all the `expired` resources are deleted. It will search for empty Resource Group and delete them too.
+By Default, the tool will get triggered every 12 hours and search for any resources tagged with `expireOn` with a value in the past in format `yyyy-MM-dd`, and delete them. Once all the `expired` resources are deleted. It will search for empty Resource Group and delete them too.
 
 ## Development
 

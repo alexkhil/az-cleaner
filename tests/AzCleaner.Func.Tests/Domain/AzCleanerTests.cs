@@ -12,19 +12,19 @@ public class AzCleanerTests
     {
         // Arrange
         azRepositoryMock
-            .Setup(x => x.GetExpiredResourceIdsAsync())
+            .Setup(x => x.GetExpiredResourceIdsAsync(CancellationToken.None))
             .ReturnsAsync(expiredResourceIds);
 
         azRepositoryMock
-            .Setup(x => x.DeleteResourcesAsync(expiredResourceIds))
+            .Setup(x => x.DeleteResourcesAsync(expiredResourceIds, CancellationToken.None))
             .Returns(Task.CompletedTask);
 
         // Act
-        await sut.CleanAsync();
+        await sut.CleanAsync(CancellationToken.None);
 
         // Assert
         azRepositoryMock.Verify(
-            x => x.DeleteResourcesAsync(expiredResourceIds),
+            x => x.DeleteResourcesAsync(expiredResourceIds, CancellationToken.None),
             Times.Once);
     }
 
@@ -36,19 +36,19 @@ public class AzCleanerTests
     {
         // Arrange
         azRepositoryMock
-            .Setup(x => x.GetEmptyResourceGroupNamesAsync())
+            .Setup(x => x.GetEmptyResourceGroupNamesAsync(CancellationToken.None))
             .ReturnsAsync(expiredResourceGroupIds);
 
         azRepositoryMock
-            .Setup(x => x.DeleteResourceGroupsAsync(expiredResourceGroupIds))
+            .Setup(x => x.DeleteResourceGroupsAsync(expiredResourceGroupIds, CancellationToken.None))
             .Returns(Task.CompletedTask);
 
         // Act
-        await sut.CleanAsync();
+        await sut.CleanAsync(CancellationToken.None);
 
         // Assert
         azRepositoryMock.Verify(
-            x => x.DeleteResourceGroupsAsync(expiredResourceGroupIds),
+            x => x.DeleteResourceGroupsAsync(expiredResourceGroupIds, CancellationToken.None),
             Times.Once);
     }
 }

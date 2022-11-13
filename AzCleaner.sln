@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzCleaner.Func", "src\AzCleaner.Func\AzCleaner.Func.csproj", "{C9C94FE0-0BC1-4C5C-A686-E30F14A8A03F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzCleaner.Func", "src\AzCleaner.Func\AzCleaner.Func.csproj", "{C9C94FE0-0BC1-4C5C-A686-E30F14A8A03F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9A969D17-EFB1-4C0C-B97E-8F11D623F910}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DC9CE217-E1AF-4385-946C-9CFBBE21209D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzCleaner.Func.Tests", "tests\AzCleaner.Func.Tests\AzCleaner.Func.Tests.csproj", "{A9FE7DBE-53CE-4677-B18A-980BF516C31B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzCleaner.Func.Tests", "tests\AzCleaner.Func.Tests\AzCleaner.Func.Tests.csproj", "{A9FE7DBE-53CE-4677-B18A-980BF516C31B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{79AA2AA3-9A30-4E5A-BCD7-3C57AC6742FA}"
 EndProject
@@ -21,9 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{79AA2AA3-9A30-4E5A-BCD7-3C57AC6742FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -53,8 +50,14 @@ Global
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C9C94FE0-0BC1-4C5C-A686-E30F14A8A03F} = {9A969D17-EFB1-4C0C-B97E-8F11D623F910}
 		{A9FE7DBE-53CE-4677-B18A-980BF516C31B} = {DC9CE217-E1AF-4385-946C-9CFBBE21209D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62E40F25-423D-464B-995A-0A4F0846E1B6}
 	EndGlobalSection
 EndGlobal

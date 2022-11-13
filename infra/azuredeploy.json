@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "12831846266170610182"
+      "version": "0.12.40.16777",
+      "templateHash": "1740313588112333280"
     }
   },
   "parameters": {
@@ -51,7 +51,7 @@
       "name": "[variables('roleAssignmentName_var')]",
       "properties": {
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('contributorRoleId'))]",
-        "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName_var')), 'Microsoft.Resources/deployments', variables('deploymentName_var'))).outputs.functionAppPrincipalId.value]"
+        "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName_var')), 'Microsoft.Resources/deployments', variables('deploymentName_var')), '2020-10-01').outputs.functionAppPrincipalId.value]"
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName_var')), 'Microsoft.Resources/deployments', variables('deploymentName_var'))]"
@@ -84,8 +84,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "3510076714427899788"
+              "version": "0.12.40.16777",
+              "templateHash": "16070558589752546168"
             }
           },
           "parameters": {
